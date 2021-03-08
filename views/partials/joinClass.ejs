@@ -1,0 +1,28 @@
+<div class="popup" id="popup-1">
+    <div class="content">
+        
+        <div class="close-btn" onclick="togglePopup()">x</div>
+        <h1 class="joinCode">Enter joining Code</h1>
+        <form action="/courses/join" method="POST">
+            <div class="input-field">
+                <input type="text" class="validate" name="joinCode" placeholder="code">
+            </div>
+            <div class="form-group mb-3">
+                <input
+                    type="submit"
+                    value="Join"
+                    class="first-button"
+                >
+            </div>
+            <!-- <button class="first-button" href="join-class">join</button> -->
+        </form>
+    </div>
+</div>
+
+<script src="/scripts/profilePicsUpload.js"></script>
+
+<!-- <script>
+    function togglePopup(){
+        document.getElementById("popup-1").classList.toggle("active");
+    }
+</script> -->

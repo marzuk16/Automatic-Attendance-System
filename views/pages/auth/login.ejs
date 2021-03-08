@@ -1,0 +1,44 @@
+<%- include("../../partials/header.ejs") %>
+
+    <div class="container myContainer">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card card-body mt-4">
+                    <h4 class="text-center">Login To Your Acoount</h4>
+                    <form action="/auth/login" method="POST">
+                        <div class="form-group m-3">
+                            <input
+                                type="text"
+                                name="userId"
+                                id="userId"
+                                class="form-control <%= error.userId ? "is-invalid":"" %>"
+                                placeholder="Enter ID"
+                            >
+                        </div>
+                        <div class="form-group m-3">
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                class="form-control <%= error.password ? "is-invalid":"" %>"
+                                placeholder="Enter password"
+                            >
+                        </div>
+                        <div class="form-group  m-3">
+                        <input
+                            type="submit"
+                            class="btn btn-primary form-group ms-3"
+                            value="Login"
+                        ></div>
+                    </form>
+                    <a href="signup" class="my-3 text-center">Don't have an account?</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+<%- include("../../partials/footer.ejs") %>
+
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+<div class=" card-body bg-dark text-white" style="min-height: 550px;">
+    <% if (myJoinedClass.length){ %>
+        <div>
+            <h5 class="font-weight-bold border-bottom border-info" data-toggle="collapse" data-target="#courseLists">Joined Classes</h5>
+          <!--   <img src="images/download.png" width="30px" height="20px"> -->
+        </div>
+        <div class="card-body my-1 collapse" id="courseLists">
+        
+        <% for(let course of myJoinedClass.reverse()){ %>
+            <div class="text-center my-2 pb-1 border-bottom border-info rounded-bottom"> 
+                <%= course %>
+                <%= course.title %> - <%= course.batch %>
+            </div>
+        <% } %>
+        </div>
+    <% } %> 
+    <% if (courses.length){ %>
+        <div class="my-3">
+            <h5 class="font-weight-bold border-bottom border-info" data-toggle="collapse" data-target="#courseListsOwned">Created Classes</h5>
+        </div>
+        <div class="card-body my-1 collapse" id="courseListsOwned">
+        
+        <% for(let course of courses){ %>
+            <div class="text-center my-2 pb-1 border-bottom border-info rounded-bottom">
+                <%= course.title %> - <%= course.batch %>
+            </div>
+        <% } %>
+        </div>
+    <% } %>     
+</div>

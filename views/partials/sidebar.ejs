@@ -8,7 +8,9 @@
         
         <% for(let course of courses.reverse()){ %>
             <div class="text-center my-2 pb-1 border-bottom border-info rounded-bottom">
-                <%= course.title %> - <%= course.batch %>
+                <a class = "text-white" href="/courses/take-attendance/<%= course._id %>">
+                    <%= course.title %> - <%= course.batch %>
+                </a>
             </div>
         <% } %>
         </div>
@@ -23,8 +25,7 @@
         
         <% for(let course of myJoinedClass.reverse()){ %>
             <div class="text-center my-2 pb-1 border-bottom border-info rounded-bottom"> 
-               <%= course %>
-                <%= course.term %> - <%= course.batch %>
+                <%= course.title%> - <%= course.batch %>
             </div>
         <% } %>
         </div>

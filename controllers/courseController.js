@@ -94,6 +94,7 @@ exports.createCoursePostController = async (req, res, next) => {
 };
 
 exports.takeAttendanceGetController = async (req, res, next) => {
+    //localhost:3000/courses/take-attendance/id
     let courseId = req.params.courseId;
 
     try {
@@ -106,13 +107,14 @@ exports.takeAttendanceGetController = async (req, res, next) => {
             error.status = 404;
             throw new Error
         }
-
+        let isChecked = true;
         res.render("pages/dashboard/course/take-attendance.ejs", {
             title: "Take Attendance",
             flashMessage: Flash.getMessage(req),
             error: {},
             value: {},
             course,
+            isChecked
         });
 
     } catch (error) {

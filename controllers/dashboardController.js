@@ -12,22 +12,25 @@ exports.dashboardGetController = async (req, res, next) => {
     try {
         let profile = await Profile.findOne({ user: req.user._id });
         let courses = await Course.find({author: req.user._id});
+        //console.log("course: ", courses);
 
         if (profile) {
             let { joinedClass } = profile;
-            //let joinedClass = ["DS", "ML", "AI","DBMS"];
-            //console.log(joinedClass);
+           
             let myJoinedClass = [];
             for(let courseId of joinedClass){
-                myJoinedClass.push(await Course.find({_id: courseId}));
+                let tmp = await Course.findOne({_id: courseId})
+                
+                myJoinedClass.push(tmp);
             }
-            console.log("myJoinedClass: ", myJoinedClass);
+            //console.log("myJoinedClass: ", myJoinedClass);    
             
             return res.render("pages/dashboard/dashboard",
                 {
                     title: "My Dashboard",
                     courses,
                     myJoinedClass,
+                    user: req.user.userId,
                     flashMessage: Flash.getMessage(req)
                 });
         }

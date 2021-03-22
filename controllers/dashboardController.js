@@ -30,7 +30,7 @@ exports.dashboardGetController = async (req, res, next) => {
                     title: "My Dashboard",
                     courses,
                     myJoinedClass,
-                    user: req.user.userId,
+                    userId: req.user.userId,
                     flashMessage: Flash.getMessage(req)
                 });
         }

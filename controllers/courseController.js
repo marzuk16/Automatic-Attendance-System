@@ -13,6 +13,7 @@ exports.createCourseGetController = (req, res, next) => {
     res.render("pages/dashboard/course/createCourse", {
         title: "Create a new course",
         error: {},
+        userId: req.user.userId,
         flashMessage: Flash.getMessage(req),
         value: {}
     });
@@ -33,6 +34,7 @@ exports.createCoursePostController = async (req, res, next) => {
         return res.render("pages/dashboard/course/createCourse", {
             title: "Create a new course",
             error: errors.mapped(),
+            userId: req.user.userId,
             flashMessage: Flash.getMessage(req),
             value: {
                 title,
@@ -68,6 +70,7 @@ exports.createCoursePostController = async (req, res, next) => {
             return res.render("pages/dashboard/course/createCourse", {
                 title: "Create a new course",
                 error: errors.mapped(),
+                userId: req.user.userId,
                 flashMessage: Flash.getMessage(req),
                 value: {
                     title,
@@ -110,6 +113,7 @@ exports.takeAttendanceGetController = async (req, res, next) => {
         let isChecked = true;
         res.render("pages/dashboard/course/take-attendance.ejs", {
             title: "Take Attendance",
+            userId: req.user.userId,
             flashMessage: Flash.getMessage(req),
             error: {},
             value: {},

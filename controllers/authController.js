@@ -67,6 +67,7 @@ exports.loginGetController = (req, res, next) => {
         {
             title: "Login to your account",
             error: {},
+            values: {},
             flashMessage: Flash.getMessage(req)
         })
 };
@@ -85,7 +86,10 @@ exports.loginPostController = async (req, res, next) => {
             {
                 title: "Login to your account",
                 error: errors.mapped(),
-                flashMessage: {}
+                flashMessage: {},
+                values: {
+                    userId
+                }
                 //flashMessage: Flash.getMessage(req)
             });
     }
@@ -98,6 +102,7 @@ exports.loginPostController = async (req, res, next) => {
             {
                 title: "Login to your account",
                 error: {},
+                values: {},
                 flashMessage: Flash.getMessage(req)
             });
         }

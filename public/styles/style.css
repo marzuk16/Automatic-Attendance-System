@@ -108,3 +108,7 @@ a {
 .floatLeft{
 	float: left;
 }
+.courseInfoInattendance{
+	border-radius: 5px;
+	background-color: #F0F2F5;
+}

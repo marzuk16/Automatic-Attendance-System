@@ -13,11 +13,34 @@
         <div class="card card-body mx-5">
             <h4 class="text-center mb-4">Your Attendance List</h4>
             <form action="/courses/take-attendance/<%= course._id %>" method="POST">
-                <h5>
-                    <span class="mr-5"><%= course.title %> - <%= course.batch %></span>
-                    <span class="mr-5"><%= course.term %></span>
-                    <span class="ml-5">Joining Code: <%= course.joiningCode %> </span>
-                </h5>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>
+                            <span class="courseInfoInattendance p-2 mr-3"><%= course.title %> - <%= course.batch %></span>
+                            <span class="courseInfoInattendance p-2 mr-3"><%= course.term %></span>
+                            <span class="courseInfoInattendance p-2 ml-3">Joining Code: <%= course.joiningCode %> </span>
+                        </h5>
+                    </div>
+                    <div class="col-md-6 d-flex flex-row-reverse">
+                        <div class="form-group">
+                            <input 
+                                type="text"
+                                name="userId"
+                                id="userId"
+                                class="pb-1 text-center form"
+                                placeholder="Enter student ID"
+                            >
+                            <input
+                                type="text"
+                                name="date"
+                                class="pb-1"
+                            >
+                            <input type="submit" value="Search" class="btn btn-primary btn-sm">
+        
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" <%= isChecked ? "checked" : "" %> >

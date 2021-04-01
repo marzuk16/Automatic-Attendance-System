@@ -1,8 +1,5 @@
-var ID = function () {
-    // Math.random should be unique because of its seeding algorithm.
-    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
-    // after the decimal.
-    return Math.random().toString(36).substr(2, 4);
-  };
+console.log(Date.now());
+var s = new Date(Date.now()).toLocaleDateString("en-US")
+console.log(s)
 
-  console.log(ID());
+console.log(Date.parse(s));

@@ -115,6 +115,7 @@ exports.loginPostController = async (req, res, next) => {
             {
                 title: "Login to your account",
                 error: {},
+                values: {},
                 flashMessage: Flash.getMessage(req)
             });
         }

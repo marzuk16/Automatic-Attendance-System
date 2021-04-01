@@ -1,10 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="/">AAS</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
@@ -18,13 +15,14 @@
                     <li class="nav-item border-left border-danger px-2">
                         <a class="nav-link text-white" onclick="togglePopup()">Join Class</a>
                     </li>
-                    <li class="nav-item border-left border-danger px-2">
-                        <a class="nav-link text-white" href="#">
-                            <%= userId %>
+                    <li class="nav-item dropdown border-left border-danger px-2">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <%= user.userId %>
                         </a>
-                    </li>
-                    <li class="nav-item border-left border-danger px-2">
-                        <a class="nav-link text-white" href="/auth/logout">Logout</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="#">Settings</a>
+                          <a class="dropdown-item" href="/auth/logout">Logout</a>
+                        </div>
                     </li>
 
                     <% } else { %>

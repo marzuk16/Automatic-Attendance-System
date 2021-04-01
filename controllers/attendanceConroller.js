@@ -7,34 +7,34 @@ const Course = require("../models/Course");
 
 const errorFomatter = require("../utils/validationErrorFormatter");
 
-exports.dashboardGetController = async (req, res, next) => {
+exports.attendanceGetController = async (req, res, next) => {
 
-    //console.log("req.user: ", req.user);
     try {
         let profile = await Profile.findOne({ user: req.user._id });
+        let courses = await Course.find({author: req.user._id});
+        //console.log("course: ", courses);
 
         if (profile) {
             let { joinedClass } = profile;
-            
-            let myCreatedCourses = await Course.find({author: req.user._id});
-
+           
             let myJoinedClass = [];
             for(let courseId of joinedClass){
                 let tmp = await Course.findOne({_id: courseId})
                 
                 myJoinedClass.push(tmp);
             }
-            //console.log("myJoinedClass: ", myJoinedClass);  
-
+            //console.log("myJoinedClass: ", myJoinedClass);    
+            
             return res.render("pages/dashboard/dashboard",
                 {
                     title: "My Dashboard",
-                    courses: myCreatedCourses,
+                    courses,
                     myJoinedClass,
+                    userId: req.user.userId,
                     flashMessage: Flash.getMessage(req)
                 });
         }
-        
+
         res.redirect("/dashboard/create-profile");
 
     } catch (error) {
@@ -43,7 +43,6 @@ exports.dashboardGetController = async (req, res, next) => {
 };
 
 exports.createProfileGetController = async (req, res, next) => {
-    console.log("request", req);
     try {
         let profile = await Profile.findOne({ user: req.user._id });
 

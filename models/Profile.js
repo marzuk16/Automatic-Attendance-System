@@ -29,8 +29,7 @@ const schemaObj = {
     }],
     joinedClass: [{
         type: Schema.Types.ObjectId,
-        ref: "Course",
-        default: ""
+        ref: "Course"
     }]
 
 };

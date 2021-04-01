@@ -32,7 +32,7 @@
                                 placeholder="Enter student ID"
                             >
                             <input
-                                type="text"
+                                type="date"
                                 name="date"
                                 class="pb-1"
                             >
@@ -41,10 +41,31 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-12 mx-auto bg-white rounded shadow">
+                        <div class="table-responsive">
+                            <div class="table table-fixed">
+                               <thead>
+                                   <tr>
+                                       <th>Id \ Date</th>
+                                       <% for( let attendance of attendances) { %>
+                                        <th><%= attendance.day %></th>
+                                       <% } %>
+                                   </tr>
+                               </thead> 
+                               <tbody>
+                                <% for( let attendance of attendances) { %>
+                                    <tr>
+                                        <th><%= attendance.studentId %></th>
+                                    </tr>
+                                   <% } %>
+                               </tbody>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" <%= isChecked ? "checked" : "" %> >
-                  </div>
             </form>
         </div>
     </div>

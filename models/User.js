@@ -27,6 +27,10 @@ const schemaObj = {
     profile:{
         type: Schema.Types.ObjectId,
         ref: "Profile"
+    },
+    status: {
+        type: Number,
+        default: 1
     }
 };
 

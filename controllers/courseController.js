@@ -7,13 +7,15 @@ const Profile = require("../models/Profile");
 const Flash = require("../utils/Flash");
 const errorFormatter = require("../utils/validationErrorFormatter");
 
-exports.createCourseGetController = (req, res, next) => {
+exports.createCourseGetController = async (req, res, next) => {
     //let courses = await Course.find({author: req.user._id});
+    let profile = await Profile.findOne({ user: req.user._id });
+    if(!profile)
+        return res.redirect("/dashboard/create-profile");
 
     res.render("pages/dashboard/course/createCourse", {
         title: "Create a new course",
         error: {},
-        userId: req.user.userId,
         flashMessage: Flash.getMessage(req),
         value: {}
     });
@@ -34,7 +36,6 @@ exports.createCoursePostController = async (req, res, next) => {
         return res.render("pages/dashboard/course/createCourse", {
             title: "Create a new course",
             error: errors.mapped(),
-            userId: req.user.userId,
             flashMessage: Flash.getMessage(req),
             value: {
                 title,
@@ -70,7 +71,6 @@ exports.createCoursePostController = async (req, res, next) => {
             return res.render("pages/dashboard/course/createCourse", {
                 title: "Create a new course",
                 error: errors.mapped(),
-                userId: req.user.userId,
                 flashMessage: Flash.getMessage(req),
                 value: {
                     title,
@@ -98,6 +98,10 @@ exports.createCoursePostController = async (req, res, next) => {
 
 exports.takeAttendanceGetController = async (req, res, next) => {
     //localhost:3000/courses/take-attendance/id
+    let profile = await Profile.findOne({ user: req.user._id });
+    if(!profile)
+        return res.redirect("/dashboard/create-profile");
+
     let courseId = req.params.courseId;
 
     try {
@@ -109,16 +113,18 @@ exports.takeAttendanceGetController = async (req, res, next) => {
             let error = new Error("404 Not Found!");
             error.status = 404;
             throw new Error
+
+            // return res.redirect("/dashboard");
         }
-        let isChecked = true;
+        let attendances = await Attendance.find({course: courseId});
+
         res.render("pages/dashboard/course/take-attendance.ejs", {
             title: "Take Attendance",
-            userId: req.user.userId,
             flashMessage: Flash.getMessage(req),
             error: {},
             value: {},
             course,
-            isChecked
+            attendances
         });
 
     } catch (error) {
@@ -137,10 +143,22 @@ exports.joinClassPostController = async (req, res, next) => {
         return res.redirect("/dashboard");
     }
 
+    let profile = await Profile.findOne({ user: req.user._id });
+    if(!profile)
+        return res.redirect("/dashboard/create-profile");
+
     let joiningCode = req.body.joinCode;
 
     try {
-        let course = await Course.findOne({joiningCode});
+        let course = await Course.findOneAndUpdate(
+            {joiningCode},
+            {$push: {"joinedStudent": req.user._id}},
+            {new: true}
+        );
+        if(!course){
+            req.flash("fail", "Join failed!");
+            return res.redirect("/dashboard");
+        }
         await Profile.findOneAndUpdate(
             {user: req.user._id},
             {$push: {"joinedClass": course._id}},

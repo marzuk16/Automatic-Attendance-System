@@ -1,0 +1,32 @@
+user
+    UserId
+    Email
+    password
+    profilePics
+    profile --> profileId
+    status(1)
+
+Profile
+    User --> userId
+    Institute
+    name
+    profilePics
+    courses --> [courseId]
+    joinedClass --> [courseId]
+
+Course
+    title
+    code
+    batch
+    term
+    joiningCode
+    Author --> userId
+    joinedStudent --> [userId]
+    attendance --> attendanceId
+    status
+
+Attendance
+    course --> courseId
+    studentId --> userId
+    value --> [{}]
+    day

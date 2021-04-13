@@ -1,74 +1,66 @@
 <%- include('../../../partials/header.ejs') %>
-
-    <div class="container-fluid">
-        <div class="col-md-8 offset-md-2">
-            <div class="row">
-                <div class="card card-body mx-5 my-3">
-                    <input type="submit" value="Take Attendance" class="btn btn-primary btn-sm my-2">
+    <form action="/courses/take-attendance/<%= course._id %>" method="POST">
+        <div class="row mb-2">
+            <div class="container-fluid">
+                <div class="col-md-8 offset-md-2">
+                    <div class="row">
+                        <div class="card card-body mx-5 my-3">
+                            <button
+                                type="submit" value="takeAttendance"
+                                class="btn btn-primary btn-sm my-2" name="action"
+                            >Take Attendance</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="card card-body mx-5">
-            <h4 class="text-center mb-4">Your Attendance List</h4>
-            <form action="/courses/take-attendance/<%= course._id %>" method="POST">
+
+            <div class="card card-body mx-5">
+                <h4 class="text-center mb-4">Your Attendance List</h4>
+
 
                 <div class="row">
                     <div class="col-md-6">
                         <h5>
-                            <span class="courseInfoInattendance p-2 mr-3"><%= course.title %> - <%= course.batch %></span>
-                            <span class="courseInfoInattendance p-2 mr-3"><%= course.term %></span>
-                            <span class="courseInfoInattendance p-2 ml-3">Joining Code: <%= course.joiningCode %> </span>
+                            <span class="courseInfoInattendance p-2 mr-3">
+                                <%= course.title %> - <%= course.batch %>
+                            </span>
+                            <span class="courseInfoInattendance p-2 mr-3">
+                                <%= course.term %>
+                            </span>
+                            <span class="courseInfoInattendance p-2 ml-3">Joining Code: <%= course.joiningCode %>
+                            </span>
                         </h5>
                     </div>
-                    <div class="col-md-6 d-flex flex-row-reverse">
-                        <div class="form-group">
-                            <input 
-                                type="text"
-                                name="userId"
-                                id="userId"
-                                class="pb-1 text-center form"
-                                placeholder="Enter student ID"
-                            >
-                            <input
-                                type="date"
-                                name="date"
-                                class="pb-1"
-                            >
-                            <input type="submit" value="Search" class="btn btn-primary btn-sm">
-        
+                    <% if (!attendances.length) { %>
+                        <div class="col-md-6 d-flex flex-row-reverse">
+                            <div class="form-group">
+                                <input type="text" name="userId" id="userId" class="pb-1 text-center form"
+                                    placeholder="Enter student ID">
+                                <input type="date" name="date" class="pb-1">
+                                <button
+                                    type="submit" value="Search"
+                                    class="btn btn-primary btn-sm my-2" name="action"
+                                >Search</button>
+
+                            </div>
                         </div>
-                    </div>
+                        <% } %>
+
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12 mx-auto bg-white rounded shadow">
-                        <div class="table-responsive">
-                            <div class="table table-fixed">
-                               <thead>
-                                   <tr>
-                                       <th>Id \ Date</th>
-                                       <% for( let attendance of attendances) { %>
-                                        <th><%= attendance.day %></th>
-                                       <% } %>
-                                   </tr>
-                               </thead> 
-                               <tbody>
-                                <% for( let attendance of attendances) { %>
-                                    <tr>
-                                        <th><%= attendance.studentId %></th>
-                                    </tr>
-                                   <% } %>
-                               </tbody>
-                            </div>
-                        </div>
-                    </div>
+                    <% if (attendances.length) { %>
+                        <%- include("./attendanceTable.ejs") %>
+                    <% } %>
                 </div>
-                
-            </form>
+
+                <button
+                    type="submit" value="update" style="width: 80px;"
+                    class="btn btn-primary btn-sm my-2" name="action"
+                >update</button>
+            </div>
         </div>
-    </div>
+    </form>
 
     <%- include("../../../partials/footer.ejs") %>
 

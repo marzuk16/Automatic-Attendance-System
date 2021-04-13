@@ -9,6 +9,7 @@ const {
     createCourseGetController,
     createCoursePostController,
     takeAttendanceGetController,
+    takeAttendancePostController,
     joinClassPostController
 } = require("../controllers/courseController");
 
@@ -18,6 +19,10 @@ router.post("/create", isAuthenticated, courseValidator, createCoursePostControl
 router.get("/take-attendance/:courseId",
     isAuthenticated, 
     takeAttendanceGetController
+);
+router.post("/take-attendance/:courseId",
+    isAuthenticated, 
+    takeAttendancePostController
 );
 
 router.post("/join", isAuthenticated, joinClassValidator, joinClassPostController);

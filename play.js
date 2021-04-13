@@ -1,5 +1,11 @@
-console.log(Date.now());
-var s = new Date(Date.now()).toLocaleDateString("en-US")
-console.log(s)
+let today = new Date();
+let date = today.getFullYear().toString() + '-';
+if(today.getMonth()+1 < 10) date += '0';
+date += today.getMonth()+1 + '-';
 
-console.log(Date.parse(s));
+if(today.getDate() < 10) date += '0';
+date += today.getDate().toString();
+
+console.log(date);
+
+console.log(today.getDate() , " ", today.getMonth()+1, " ", today.getFullYear());

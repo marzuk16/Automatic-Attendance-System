@@ -1,5 +1,28 @@
-
-<!-- for checkbox -->
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" <%= isChecked ? "checked" : "" %> >
+<div class="col-md-12 bg-white rounded shadow">
+    <div class="table-responsive">
+        <div class="table table-fixed">
+           <thead>
+               <tr>
+                   <th>Id \ Date</th>
+                   <% for( let attendance of attendances) { %>
+                    <th><%= attendance.day %></th>
+                   <% } %>
+               </tr>
+           </thead> 
+           <tbody>
+            <% for( let attendance of attendances) { %>
+                <tr>
+                    <th><%= attendance.studentId %></th>
+                    <td>
+                        <!-- for checkbox -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                            <%= attendance.value.isPresent ? "checked" : "" %> >
+                        </div>
+                    </td>
+                </tr>
+               <% } %>
+           </tbody>
+        </div>
+    </div>
 </div>

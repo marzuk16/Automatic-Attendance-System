@@ -1,7 +1,11 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="/">AAS</a>
-        
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
@@ -9,7 +13,7 @@
                     <li class="nav-item border-left border-danger px-2">
                         <a class="nav-link text-white" href="/dashboard"> Dashboard </a>
                     </li>
-                    
+
                     <li class="nav-item border-left border-danger px-2">
                         <a class="nav-link text-white" href="/courses/create">Create Class</a>
                     </li>
@@ -17,21 +21,18 @@
                         <a class="nav-link text-white" onclick="togglePopup()">Join Class</a>
                     </li>
                     <li class="nav-item dropdown border-left border-danger px-2">
-                        <img 
-                            src=" <%= user.profilePics %> "
-                            alt="profile pics"
-                            class="img-fluid rounded-circle"
-                            id="profilePics"
-                            style="width: 45px; height: 40px;"
-                        >
+                        <img src=" <%= user.profilePics %> " alt="profile pics" class="img-fluid rounded-circle"
+                            id="profilePics" style="width: 45px; height: 40px;">
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <%= user.userId %>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                          <a class="dropdown-item" href="/dashboard/edit-profile">Edit profile</a>
-                          <a class="dropdown-item" href="/auth/logout">Logout</a>
+                            <a class="dropdown-item" href="/auth/change-password">Change Password</a>
+                            <a class="dropdown-item" href="/dashboard/edit-profile">Edit profile</a>
+                            <a class="dropdown-item" href="/auth/logout">Logout</a>
                         </div>
                     </li>
 

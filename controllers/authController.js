@@ -139,6 +139,64 @@ exports.loginPostController = async (req, res, next) => {
     }
 };
 
+exports.changePasswordGetController = async (req, res, next) => {
+    res.render('pages/auth/changePassword', {
+        title: 'Change Password',
+        error : {},
+        flashMessage: Flash.getMessage(req)
+    })
+};
+exports.changePasswordPostController = async (req, res, next) => {
+    
+    let {
+        oldPassword,
+        newPassword,
+        confirmPassword
+    } = req.body;
+
+    let errors = validationResult(req).formatWith(errorFormatter);
+    if (!errors.isEmpty()) {
+        console.log("errors: ", errors.mapped());
+
+        //req.flash("fail", "please check your form !");
+
+        return res.render("pages/auth/changePassword",
+            {
+                title: "Change Password",
+                error: errors.mapped(),
+                flashMessage: {},
+                //flashMessage: Flash.getMessage(req)
+            });
+    }
+    
+    if(newPassword !== confirmPassword){
+        req.flash('fail', 'Password does not match');
+        return res.redirect('/auth/change-password');
+    }
+
+    try {
+        let match = await bcrypt.compare(oldPassword, req.user.password);
+
+        if(!match){
+            req.flash('fail', 'Please provide a correct old password');
+            return res.redirect('/auth/change-password');
+        }
+    
+        let hash = await bcrypt.hash(newPassword, 12);
+
+        await User.findOneAndUpdate(
+            {_id: req.user._id},
+            {$set: {password: hash }}
+        );
+
+        req.flash('success', 'Password updated successfully');
+        return res.redirect('/auth/change-password');
+
+    } catch (e) {
+        next(e);
+    }
+};
+
 exports.logoutController = (req, res, next) => {
     req.session.destroy(error => {
         if (error) {

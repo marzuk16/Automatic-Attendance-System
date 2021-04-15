@@ -20,6 +20,8 @@ const schemaObj = {
         required: true,
         minlength: 6
     },
+    resetToken: String,
+    expireToken: Date,
     profilePics: {
         type: String,
         default: "/uploads/default.jpg"

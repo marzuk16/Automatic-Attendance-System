@@ -14,10 +14,10 @@ const schemaObj = {
         required: true
     },
     value: [{
-        entryTime: Number,
+        day: String,
+        entryTime: String,
         isPresent: Boolean
-    }],
-    day: String
+    }]
 };
 
 const attendanceSchema = new Schema(schemaObj, { timestamps: true });

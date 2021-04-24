@@ -7,7 +7,8 @@
                         <div class="card card-body mx-5 my-3">
                             <button
                                 type="submit" value="takeAttendance"
-                                class="btn btn-primary btn-sm my-2" name="action"
+                                class="btn btn-primary btn-sm my-2"
+                                name="action" <%= attendances.length ? "" : "disabled"%> 
                             >Take Attendance</button>
                         </div>
                     </div>
@@ -31,16 +32,14 @@
                             </span>
                         </h5>
                     </div>
-                    <% if (!attendances.length) { %>
+                    <% if (attendances.length) { %>
                         <div class="col-md-6 d-flex flex-row-reverse">
                             <div class="form-group">
                                 <input type="text" name="userId" id="userId" class="pb-1 text-center form"
                                     placeholder="Enter student ID">
                                 <input type="date" name="date" class="pb-1">
-                                <button
-                                    type="submit" value="Search"
-                                    class="btn btn-primary btn-sm my-2" name="action"
-                                >Search</button>
+                                <button type="submit" value="Search" class="btn btn-primary btn-sm my-2"
+                                    name="action">Search</button>
 
                             </div>
                         </div>
@@ -51,13 +50,17 @@
                 <div class="row">
                     <% if (attendances.length) { %>
                         <%- include("./attendanceTable.ejs") %>
+                        <button type="submit" value="update" style="width: 80px;"
+                            class="btn btn-primary btn-sm my-2" name="action">
+                            update
+                        </button>
+                    <% } else { %>
+                     <div class="container my-5 text-center">
+                        <h1>No one joined in this course !</h1>
+                     </div>
                     <% } %>
+                    
                 </div>
-
-                <button
-                    type="submit" value="update" style="width: 80px;"
-                    class="btn btn-primary btn-sm my-2" name="action"
-                >update</button>
             </div>
         </div>
     </form>

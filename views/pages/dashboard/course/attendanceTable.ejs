@@ -1,28 +1,42 @@
 <div class="col-md-12 bg-white rounded shadow">
-    <div class="table-responsive">
-        <div class="table table-fixed">
-           <thead>
-               <tr>
-                   <th>Id \ Date</th>
-                   <% for( let attendance of attendances) { %>
-                    <th><%= attendance.day %></th>
-                   <% } %>
-               </tr>
-           </thead> 
-           <tbody>
-            <% for( let attendance of attendances) { %>
+    <table class="table table-hover">
+        <thead class="table-active">
+            <tr>
+                <th scope="col">Id \ Date</th>
+                <% for( let val of attendances[0].value) { %>
+                    <th scope="col">
+                        <%= val.day%>
+                    </th>
+                <% } %>
+                <% if (!add) { %>
+                    <th scope="col">
+                        <button type="submit" value="add" name="action"
+                        class="btn btn-link">
+                        <i class="fas fa-plus-circle fa-lg"></i>
+                        </button>
+                    </th>
+                <% } %> 
+            </tr>
+        </thead>
+        <tbody>
+            <% for( let attend of attendances) { %>
                 <tr>
-                    <th><%= attendance.studentId %></th>
-                    <td>
-                        <!-- for checkbox -->
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"
-                            <%= attendance.value.isPresent ? "checked" : "" %> >
-                        </div>
-                    </td>
+                    <th scope="row">
+                        <%= attend.userId ? attend.userId : "" %>
+                    </th>
+                    <% for (let val of attend.value) { %>
+                        <td>
+                            <!-- for checkbox -->
+                            <div class="form-check">
+                                <input 
+                                    class="form-check-input" type="checkbox"
+                                    value="" id="flexCheckDefault"
+                                    <%=val.isPresent ? "checked" : "" %> >
+                            </div>
+                        </td>
+                    <% } %>
                 </tr>
-               <% } %>
-           </tbody>
-        </div>
-    </div>
+                <% } %>
+        </tbody>
+    </table>
 </div>

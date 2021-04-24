@@ -252,8 +252,7 @@ exports.resetPasswordPostController = (req, res, next) => {
                     {
                         title: "Change Password",
                         error: {},
-                        flashMessage: {},
-                        //flashMessage: Flash.getMessage(req)
+                        flashMessage: Flash.getMessage(req)
                     });
             }
 
@@ -281,8 +280,17 @@ exports.resetPasswordPostController = (req, res, next) => {
     }
 };
 
-exports.newPasswordGetController = (req, res, next) => {
-    // console.log("get req.params.token: ", req.params.token);
+exports.newPasswordGetController = async (req, res, next) => {
+    let token = req.params.token;
+    let user = await User.findOne({ resetToken: token, expireToken: { $gt: Date.now()}});
+    if (!user) {
+        req.flash('fail', 'Link expired, Try again!');
+        return res.render('pages/auth/resetPassword', {
+            title: 'Reset Password',
+            error: {},
+            flashMessage: Flash.getMessage(req)
+        });
+    }
     res.render('pages/auth/newPassword', {
         title: 'New Password',
         error: {},
@@ -310,12 +318,11 @@ exports.newPasswordPostController = async (req, res, next) => {
     }
 
     let { newPassword, confirmPassword } = req.body;
-    if(token){
-        let user = await User.findOne({resetToken: token});
-        //let user = await User.findOne({resetToken: token, expireToken: {$gt: Date.now()}});
-        if(!user){
-            
-            req.flash('fail', 'Try again, session expired!');
+    if (token) {
+        //let user = await User.findOne({resetToken: token});
+        let user = await User.findOne({ resetToken: token, expireToken: { $gt: Date.now() } });
+        if (!user) {
+            req.flash('fail', 'Link expired, Try again!');
             return res.render('pages/auth/resetPassword', {
                 title: 'Reset Password',
                 error: {},
@@ -331,18 +338,18 @@ exports.newPasswordPostController = async (req, res, next) => {
                 flashMessage: Flash.getMessage(req)
             });
         }
-    
+
         try {
             let hash = await bcrypt.hash(newPassword, 12);
-    
+
             await User.findOneAndUpdate(
                 { _id: user._id },
                 { $set: { password: hash, resetToken: undefined, expireToken: undefined } }
             );
-    
+
             req.flash('success', 'New Password saved successfully');
             res.redirect("/auth/login");
-    
+
         } catch (e) {
             next(e);
         }

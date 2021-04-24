@@ -1,4 +1,4 @@
-const { validationResult } = require("express-validator");
+/* const { validationResult } = require("express-validator");
 const Flash = require("../utils/Flash");
 
 const Profile = require("../models/Profile");
@@ -159,10 +159,10 @@ exports.editProfilePostController = async (req, res, next) => {
     let tmp = institutions[institute-1];
 
     try {
-/*         let profile = new Profile({
-            institute: tmp,
-            name
-        }); */
+        // let profile = new Profile({
+        //     institute: tmp,
+        //     name
+        // });
 
         let updatedProfile = await Profile.findOneAndUpdate(
             {user: req.user._id},
@@ -193,3 +193,4 @@ exports.editProfilePostController = async (req, res, next) => {
         next(error);
     }
 };
+ */

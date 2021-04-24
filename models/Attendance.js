@@ -14,7 +14,8 @@ const schemaObj = {
         required: true
     },
     value: [{
-        entryTime: Number,
+        day: String,
+        entryTime: String,
         isPresent: Boolean
     }]
 };

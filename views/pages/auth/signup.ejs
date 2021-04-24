@@ -6,32 +6,6 @@
                 <div class="card card-body mt-4">
                     <h4 class="text-center">Create A New Acoount</h4>
                     <form action="/auth/signup" method="POST">
-                        <!-- <div class="form-group m-3">
-                            <input
-                                type="text"
-                                name="name"
-                                id="name"
-                                class="form-control <%= error.name ? "is-invalid" : "" %>"
-                                value="<%= values.name ? values.name:"" %>"
-                                placeholder="Enter Name"
-                            >
-                            <div class="invalid-feedback">
-                                <%= error.name && error.name %> 
-                            </div>
-                        </div> -->
-<!--                         <div class="form-group m-3">
-                            <input
-                                type="text"
-                                name="institute"
-                                id="institute"
-                                class="form-control <%= error.institute ? "is-invalid" : "" %>"
-                                value="<%= values.institute ? values.institute:"" %>"
-                                placeholder="Enter Institute Name"
-                            >
-                            <div class="invalid-feedback">
-                                <%= error.institute && error.institute %> 
-                            </div>
-                        </div> -->
                         <div class="form-group m-3">
                             <input
                                 type="text"
@@ -39,7 +13,7 @@
                                 id="userId"
                                 class="form-control <%= error.userId ? "is-invalid" : "" %>"
                                 value="<%= values.userId ? values.userId:"" %>"
-                                placeholder="Enter ID"
+                                placeholder="Enter Your Institution ID"
                             >
                             <div class="invalid-feedback">
                                 <%= error.userId && error.userId %> 

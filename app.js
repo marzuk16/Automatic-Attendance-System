@@ -8,6 +8,7 @@ const setMiddleware = require("./middleware/middleware");
 const setRoutes = require("./routes/routes");
 
 const app = express();
+// console.log("app: ", app);
 
 //variables for db configure
 const PORT = process.env.PORT || 3000;
@@ -44,7 +45,9 @@ app.use( (error, req, res, next) =>{
 
 
 mongoose.connect(mongoDBUrl, {
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
 })
     .then(() => {
         //console.log(`Database connected`);

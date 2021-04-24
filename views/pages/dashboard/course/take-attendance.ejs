@@ -1,29 +1,73 @@
 <%- include('../../../partials/header.ejs') %>
+    <form action="/courses/take-attendance/<%= course._id %>" method="POST">
+        <div class="row mb-2">
+            <% if (owner) { %>
+                <div class="container-fluid">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="row">
+                            <div class="card card-body mx-5 my-3">
+                                <button
+                                    type="submit" value="takeAttendance"
+                                    class="btn btn-primary btn-sm my-2"
+                                    name="action" <%= attendances.length ? "" : "disabled"%> 
+                                >Take Attendance</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
 
-    <div class="container-fluid">
-        <div class="col-md-8 offset-md-2">
-            <div class="row">
-                <div class="card card-body mx-5 my-3">
-                    <input type="submit" value="Take Attendance" class="btn btn-primary btn-sm my-2">
+            <div class="card card-body mx-5">
+                <h4 class="text-center mb-4">Your Attendance List</h4>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>
+                            <span class="courseInfoInattendance p-2 mr-3">
+                                <%= course.title %> - <%= course.batch %>
+                            </span>
+                            <span class="courseInfoInattendance p-2 mr-3">
+                                <%= course.term %>
+                            </span>
+                            <span class="courseInfoInattendance p-2 ml-3">Joining Code: <%= course.joiningCode %>
+                            </span>
+                        </h5>
+                    </div>
+                    <% if (attendances.length && owner) { %>
+                        <div class="col-md-6 d-flex flex-row-reverse">
+                            <div class="form-group">
+                                <input type="text" name="userId" id="userId" class="pb-1 text-center form"
+                                    placeholder="Enter student ID">
+                                <input type="date" name="date" class="pb-1">
+                                <button type="submit" value="Search" class="btn btn-primary btn-sm my-2"
+                                    name="action">Search</button>
+
+                            </div>
+                        </div>
+                    <% } %>
+
+                </div>
+
+                <div class="row">
+                    <% if (attendances.length) { %>
+                        <%- include("./attendanceTable.ejs") %>
+                        <% if (owner) { %>
+                            <button type="submit" value="update" style="width: 80px;"
+                                class="btn btn-primary btn-sm my-2" name="action">
+                                update
+                            </button>
+                        <% } %>
+                    <% } else { %>
+                     <div class="container my-5 text-center">
+                        <h1>No one joined in this course !</h1>
+                     </div>
+                    <% } %>
+                    
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="card card-body mx-5">
-            <h4 class="text-center mb-4">Your Attendance List</h4>
-            <form action="/courses/take-attendance/<%= course._id %>" method="POST">
-                <h5>
-                    <span class="mr-5"><%= course.title %> - <%= course.batch %></span>
-                    <span class="ml-5">Joining Code: <%= course.joiningCode %> </span>
-                </h5>
-                
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" <%= isChecked ? "checked" : "" %> >
-                  </div>
-            </form>
-        </div>
-    </div>
+    </form>
 
     <%- include("../../../partials/footer.ejs") %>
 

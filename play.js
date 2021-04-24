@@ -1,8 +1,11 @@
-var ID = function () {
-    // Math.random should be unique because of its seeding algorithm.
-    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
-    // after the decimal.
-    return Math.random().toString(36).substr(2, 4);
-  };
+let today = new Date();
+let date = today.getFullYear().toString() + '-';
+if(today.getMonth()+1 < 10) date += '0';
+date += today.getMonth()+1 + '-';
 
-  console.log(ID());
+if(today.getDate() < 10) date += '0';
+date += today.getDate().toString();
+
+console.log(date);
+
+console.log(today.getDate() , " ", today.getMonth()+1, " ", today.getFullYear());

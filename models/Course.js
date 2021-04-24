@@ -41,10 +41,18 @@ const schemaObj = {
         ref: "User",
         required: true
     },
+    joinedStudent: [{
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    }],
     attendance: {
-            type: Schema.Types.ObjectId,
-            ref: "Attendance"
-        }
+        type: Schema.Types.ObjectId,
+        ref: "Attendance"
+    },
+    status: {
+        type: Number,
+        default: 1
+    }
 };
 
 const courseSchema = new Schema(schemaObj, { timestamps: true });

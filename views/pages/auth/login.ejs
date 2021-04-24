@@ -12,7 +12,8 @@
                                 name="userId"
                                 id="userId"
                                 class="form-control <%= error.userId ? "is-invalid":"" %>"
-                                placeholder="Enter ID"
+                                value="<%= values.userId? values.userId:"" %>"
+                                placeholder="Enter Your Institution ID"
                             >
                         </div>
                         <div class="form-group m-3">
@@ -31,7 +32,8 @@
                             value="Login"
                         ></div>
                     </form>
-                    <a href="signup" class="my-3 text-center">Don't have an account?</a>
+                    <a href="reset-password" class="my-3 text-center">Forgot password?</a>
+                    <!-- <a href="signup" class="mb-3 text-center">Don't have an account?</a> -->
                 </div>
 
             </div>

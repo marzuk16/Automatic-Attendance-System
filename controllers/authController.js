@@ -1,9 +1,15 @@
+const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const Flash = require("../utils/Flash");
 
 const User = require("../models/User");
 const errorFormatter = require("../utils/validationErrorFormatter");
+
+
+const sgMail = require('@sendgrid/mail');
+const apiKey = "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";
+sgMail.setApiKey(apiKey);
 
 exports.signupGetController = (req, res, next) => {
     res.render("pages/auth/signup",
@@ -17,14 +23,12 @@ exports.signupGetController = (req, res, next) => {
 
 exports.signupPostController = async (req, res, next) => {
     //console.log(req.body);
-    const {userId, email, password } = req.body;
+    const { userId, email, password } = req.body;
 
     let errors = validationResult(req).formatWith(errorFormatter);
 
     if (!errors.isEmpty()) {
         //return console.log(errors.mapped());
-
-        //req.flash("fail", "please check your form !");
 
         return res.render("pages/auth/signup",
             {
@@ -50,8 +54,17 @@ exports.signupPostController = async (req, res, next) => {
 
         let user = new User(userObj);
 
-        await user.save(); // object created in db collections
-        //console.log("User Created Successfully!", createdUser);
+        const createdUser = await user.save(); // object created in db collections
+
+        const msg = {
+            to: createdUser.email, // Change to your recipient
+            from: 'marzuk777@gmail.com', // Change to your verified sender
+            subject: 'Welcome to AAS',
+            text: 'Weelcome to AAS',
+            html: '<strong>Thanks for using AAS</strong>',
+        }
+        sgMail.send(msg);
+
         req.flash("success", "User created successfully !");
         res.redirect("login");
 
@@ -63,10 +76,11 @@ exports.signupPostController = async (req, res, next) => {
 
 exports.loginGetController = (req, res, next) => {
 
-    res.render("pages/auth/login", 
+    res.render("pages/auth/login",
         {
             title: "Login to your account",
             error: {},
+            values: {},
             flashMessage: Flash.getMessage(req)
         })
 };
@@ -85,7 +99,10 @@ exports.loginPostController = async (req, res, next) => {
             {
                 title: "Login to your account",
                 error: errors.mapped(),
-                flashMessage: {}
+                flashMessage: {},
+                values: {
+                    userId
+                }
                 //flashMessage: Flash.getMessage(req)
             });
     }
@@ -95,11 +112,12 @@ exports.loginPostController = async (req, res, next) => {
         if (!user) {
             req.flash("fail", "Invalid credentials !");
             return res.render("pages/auth/login",
-            {
-                title: "Login to your account",
-                error: {},
-                flashMessage: Flash.getMessage(req)
-            });
+                {
+                    title: "Login to your account",
+                    error: {},
+                    values: {},
+                    flashMessage: Flash.getMessage(req)
+                });
         }
 
         let matched = await bcrypt.compare(password, user.password);
@@ -107,11 +125,12 @@ exports.loginPostController = async (req, res, next) => {
         if (!matched) {
             req.flash("fail", "Invalid credentials !");
             return res.render("pages/auth/login",
-            {
-                title: "Login to your account",
-                error: {},
-                flashMessage: Flash.getMessage(req)
-            });
+                {
+                    title: "Login to your account",
+                    error: {},
+                    values: {},
+                    flashMessage: Flash.getMessage(req)
+                });
         }
 
         //console.log("login success", user);
@@ -132,6 +151,210 @@ exports.loginPostController = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.changePasswordGetController = async (req, res, next) => {
+    res.render('pages/auth/changePassword', {
+        title: 'Change Password',
+        error: {},
+        flashMessage: Flash.getMessage(req)
+    })
+};
+exports.changePasswordPostController = async (req, res, next) => {
+    let {
+        oldPassword,
+        newPassword,
+        confirmPassword
+    } = req.body;
+
+    let errors = validationResult(req).formatWith(errorFormatter);
+    if (!errors.isEmpty()) {
+        console.log("errors: ", errors.mapped());
+
+        //req.flash("fail", "please check your form !");
+
+        return res.render("pages/auth/changePassword",
+            {
+                title: "Change Password",
+                error: errors.mapped(),
+                flashMessage: {},
+                //flashMessage: Flash.getMessage(req)
+            });
+    }
+
+    if (newPassword !== confirmPassword) {
+        req.flash('fail', 'Password does not match');
+        return res.redirect('/auth/change-password');
+    }
+
+    try {
+        let match = await bcrypt.compare(oldPassword, req.user.password);
+
+        if (!match) {
+            req.flash('fail', 'Please provide a correct old password');
+            return res.redirect('/auth/change-password');
+        }
+
+        let hash = await bcrypt.hash(newPassword, 12);
+
+        await User.findOneAndUpdate(
+            { _id: req.user._id },
+            { $set: { password: hash } }
+        );
+
+        req.flash('success', 'Password updated successfully');
+        return res.redirect('/auth/change-password');
+
+    } catch (e) {
+        next(e);
+    }
+};
+
+exports.resetPasswordGetController = async (req, res, next) => {
+    res.render('pages/auth/resetPassword', {
+        title: 'Change Password',
+        error: {},
+        flashMessage: {}
+    })
+};
+exports.resetPasswordPostController = (req, res, next) => {
+    const { userId } = req.body;
+
+    let errors = validationResult(req).formatWith(errorFormatter);
+
+    if (!errors.isEmpty()) {
+        console.log("reset errors: ", errors.mapped());
+
+        //req.flash("fail", "please check your form !");
+
+        return res.render("pages/auth/resetPassword",
+            {
+                title: "Change Password",
+                error: errors.mapped(),
+                flashMessage: {},
+                //flashMessage: Flash.getMessage(req)
+            });
+    }
+
+    try {
+        // let token;
+        crypto.randomBytes(32, async (err, buffer) => {
+            if (err) console.log("crypto error: ", err);
+            const token = await buffer.toString("hex");
+            // console.log("token: ", token);
+
+            let user = await User.findOneAndUpdate(
+                { userId },
+                { $set: { resetToken: token, expireToken: Date.now() + 900 } }
+            );
+            if (!user) {
+                req.flash("fail", "Invalid userId !");
+                return res.render("pages/auth/resetPassword",
+                    {
+                        title: "Change Password",
+                        error: {},
+                        flashMessage: Flash.getMessage(req)
+                    });
+            }
+
+            const msg = {
+                to: user.email, // Change to your recipient
+                from: 'marzuk777@gmail.com', // Change to your verified sender
+                subject: 'Reset Password',
+                text: 'Click Here',
+                html: `
+                    <p>You requested for password reset</p>
+                    <h4><a href="http://localhost:3000/auth/reset-password/${token}" >Click Here</a> to reset password</h4>
+                `,
+            }
+            sgMail.send(msg);
+
+            req.flash("success", "Please check your email! This mail valid for next 15 minutes! ");
+            return res.redirect('/auth/login');
+        });
+
+
+
+    } catch (error) {
+        //console.log(error);
+        next(error);
+    }
+};
+
+exports.newPasswordGetController = async (req, res, next) => {
+    let token = req.params.token;
+    let user = await User.findOne({ resetToken: token, expireToken: { $gt: Date.now()}});
+    if (!user) {
+        req.flash('fail', 'Link expired, Try again!');
+        return res.render('pages/auth/resetPassword', {
+            title: 'Reset Password',
+            error: {},
+            flashMessage: Flash.getMessage(req)
+        });
+    }
+    res.render('pages/auth/newPassword', {
+        title: 'New Password',
+        error: {},
+        token: req.params.token,
+        flashMessage: {}
+    })
+}
+exports.newPasswordPostController = async (req, res, next) => {
+    let token = req.params.token;
+    let errors = validationResult(req).formatWith(errorFormatter);
+
+    if (!errors.isEmpty()) {
+        // console.log("new errors: ", errors.mapped());
+
+        //req.flash("fail", "please check your form !");
+
+        return res.render("pages/auth/newPassword",
+            {
+                title: "New Password",
+                error: errors.mapped(),
+                flashMessage: {},
+                token
+                //flashMessage: Flash.getMessage(req)
+            });
+    }
+
+    let { newPassword, confirmPassword } = req.body;
+    if (token) {
+        //let user = await User.findOne({resetToken: token});
+        let user = await User.findOne({ resetToken: token, expireToken: { $gt: Date.now() } });
+        if (!user) {
+            req.flash('fail', 'Link expired, Try again!');
+            return res.render('pages/auth/resetPassword', {
+                title: 'Reset Password',
+                error: {},
+                flashMessage: Flash.getMessage(req)
+            });
+        }
+        if (newPassword !== confirmPassword) {
+            req.flash('fail', 'Password does not match');
+            return res.render("pages/auth/newPassword", {
+                title: "New Password",
+                error: {},
+                token,
+                flashMessage: Flash.getMessage(req)
+            });
+        }
+
+        try {
+            let hash = await bcrypt.hash(newPassword, 12);
+
+            await User.findOneAndUpdate(
+                { _id: user._id },
+                { $set: { password: hash, resetToken: undefined, expireToken: undefined } }
+            );
+
+            req.flash('success', 'New Password saved successfully');
+            res.redirect("/auth/login");
+
+        } catch (e) {
+            next(e);
+        }
+    }
+}
 
 exports.logoutController = (req, res, next) => {
     req.session.destroy(error => {

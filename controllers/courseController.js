@@ -43,7 +43,7 @@ exports.createCoursePostController = async (req, res, next) => {
     console.log("Errors: ", errors.mapped());
 
     let { title, code, batch, term } = req.body;
-    console.log("req.body: ", req.body);
+    // console.log("req.body: ", req.body);
 
     if (!errors.isEmpty()) {
 
@@ -76,7 +76,7 @@ exports.createCoursePostController = async (req, res, next) => {
         let hasCourse = await Course.findOne(
             { user: req.user._id, code, batch, term }
         );
-        console.log("hasCourse: ", hasCourse);
+        // console.log("hasCourse: ", hasCourse);
         if (hasCourse) {
             req.flash("fail",
                 "This course already in your list, Please check your dashboard"
@@ -111,6 +111,61 @@ exports.createCoursePostController = async (req, res, next) => {
     }
 };
 
+exports.myAttendanceGetController = async (req, res, next) => {
+    //localhost:3000/courses/take-attendances/id
+    let profile = await Profile.findOne({ user: req.user._id });
+    if (!profile)
+        return res.redirect("/dashboard/create-profile");
+
+    let courseId = req.params.courseId;
+
+    try {
+        let course = await Course.findOne({ _id: courseId });
+
+        if(course){
+            let flag = false;
+            for(let stdnt of course.joinedStudent ){
+                if(stdnt.toString() === req.user._id.toString()){
+                    flag = true;
+                    break;
+                }
+            }
+            if( !flag) course = null;
+        }
+        console.log("course: ", course);
+
+        if (!course) {
+            req.flash("fail", "Course not found!");
+            return res.redirect("/dashboard");
+        }
+
+        let attendances = [];
+
+        let tmp1 = await Attendance.findOne({ course: courseId, studentId: req.user._id});
+
+        tmp1 = tmp1?.toJSON();
+        tmp1.userId = req.user.userId;
+
+        attendances.push(tmp1);
+
+        res.render("pages/dashboard/course/take-attendance.ejs", {
+            title: "Take Attendance",
+            flashMessage: Flash.getMessage(req),
+            error: {},
+            value: {},
+            course,
+            attendances,
+            attendance: attendances[0],
+            add : true,
+            owner : false
+        });
+
+    } catch (error) {
+        next(error);
+    }
+
+};
+
 exports.takeAttendanceGetController = async (req, res, next) => {
     //localhost:3000/courses/take-attendance/id
     let profile = await Profile.findOne({ user: req.user._id });
@@ -123,9 +178,8 @@ exports.takeAttendanceGetController = async (req, res, next) => {
         let course = await Course.findOne({ author: req.user._id, _id: courseId });
 
         if (!course) {
-            let error = new Error("404 Not Found!");
-            error.status = 404;
-            throw new Error
+            req.flash("fail", "Course not found!");
+            return res.redirect("/dashboard");
         }
 
         let attendances = [];
@@ -134,14 +188,12 @@ exports.takeAttendanceGetController = async (req, res, next) => {
         let add = false;
         let today = currentDay();
 
-        // console.log("joinedStudent: ", joinedStudent);
-
         for(let stdnt of joinedStudent){
             tmp = await User.findOne({_id: stdnt});
             tmp1 = await Attendance.findOne({ course: courseId, studentId:  stdnt});
             // console.log("att. value: ", tmp1.studentId);
 
-            tmp1 = tmp1.toJSON();
+            tmp1 = tmp1?.toJSON();
             tmp1.userId = tmp.userId;
             // console.log("att. value: ", tmp1.value);
 
@@ -156,9 +208,6 @@ exports.takeAttendanceGetController = async (req, res, next) => {
                 }
             }
         }
-        
-        // console.log("att: ", attendances[0]);
-
 
         res.render("pages/dashboard/course/take-attendance.ejs", {
             title: "Take Attendance",
@@ -168,7 +217,8 @@ exports.takeAttendanceGetController = async (req, res, next) => {
             course,
             attendances,
             attendance: attendances[0],
-            add
+            add,
+            owner : true
         });
 
     } catch (error) {
@@ -195,7 +245,7 @@ exports.takeAttendancePostController = async (req, res, next) => {
         
         for(let val of attendances.value){
             if(val.day === currentDay()){
-                return res.redirect(`/course/take-attendnace/${courseId}`);
+                return res.redirect(`/courses/take-attendnace/${courseId}`);
                 // return res.redirect("/courses/take-attendance/:courseId");
             }
         }
@@ -220,8 +270,6 @@ exports.takeAttendancePostController = async (req, res, next) => {
             attendances.push(attendancesBSON);
         }
 
-        console.log("attendances", attendances);
-
         return res.render("pages/dashboard/course/take-attendance.ejs", {
             title: "Take Attendance",
             flashMessage: {},
@@ -229,7 +277,8 @@ exports.takeAttendancePostController = async (req, res, next) => {
             value: {},
             course,
             add: true,
-            attendances
+            attendances,
+            owner : true
         });
 
     }    
@@ -325,7 +374,8 @@ exports.takeAttendancePostController = async (req, res, next) => {
             value: {},
             course,
             add: true,
-            attendances
+            attendances,
+            owner : true
         });
     }
     if (req.body.action === "takeAttendance") {
@@ -336,8 +386,6 @@ exports.takeAttendancePostController = async (req, res, next) => {
         return ;
     }
 
-    // return res.redirect(`/courses/take-attendance/${courseId}`, { attendances });
-
 };
 
 exports.joinClassPostController = async (req, res, next) => {
@@ -346,7 +394,6 @@ exports.joinClassPostController = async (req, res, next) => {
     let errors = validationResult(req).formatWith(errorFormatter);
 
     if (!errors.isEmpty()) {
-
         req.flash("fail", "Join failed!");
         return res.redirect("/dashboard");
     }
@@ -359,11 +406,15 @@ exports.joinClassPostController = async (req, res, next) => {
 
     try {
         let course = await Course.findOne({joiningCode});
-        for(let stdnt of course.joinedStudent){
-            if(req.user._id.toString() === stdnt.toString()){
-                return res.redirect("/dashboard");
+        let courseId = course._id;
+        if(course){
+            for(let stdnt of course.joinedStudent){
+                if(req.user._id.toString() === stdnt.toString()){
+                    return res.redirect("/dashboard");
+                }
             }
         }
+        
         course = await Course.findOneAndUpdate(
             { joiningCode },
             { $push: { "joinedStudent": req.user._id } },
@@ -378,11 +429,22 @@ exports.joinClassPostController = async (req, res, next) => {
             { $push: { "joinedClass": course._id } },
             { new: true }
         );
-
+                
         let attendanceSheetObj = {
             course: course._id,
             studentId: req.user._id
         };
+
+        let attendance = await Attendance.findOne({course: courseId});
+        if(attendance){
+            let value = [];
+            attendance.toJSON();
+            for(let val of attendance.value){
+                val.isPresent = false;
+                value.push(val);
+            }
+            attendanceSheetObj.value = value;
+        }
         
         let attendanceSheet = new Attendance(attendanceSheetObj);
         await attendanceSheet.save();

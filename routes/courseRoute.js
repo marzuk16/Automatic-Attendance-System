@@ -7,6 +7,7 @@ const { isAuthenticated } = require("../middleware/authMiddleware");
 const {
     createCourseGetController,
     createCoursePostController,
+    myAttendanceGetController,
     takeAttendanceGetController,
     takeAttendancePostController,
     joinClassPostController
@@ -17,6 +18,11 @@ router.post("/create", isAuthenticated, courseValidator, createCoursePostControl
 
 router.get("/take-attendance/:courseId", isAuthenticated, takeAttendanceGetController);
 router.post("/take-attendance/:courseId", isAuthenticated, takeAttendancePostController);
+
+router.get("/take-attendances/:courseId", 
+    isAuthenticated,
+    myAttendanceGetController
+);
 
 router.post("/join", isAuthenticated, joinClassValidator, joinClassPostController);
 

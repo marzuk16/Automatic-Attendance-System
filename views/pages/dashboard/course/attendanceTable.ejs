@@ -1,4 +1,4 @@
-<div class="col-md-12 bg-white rounded shadow">
+<div class="col-md-12 bg-white rounded shadow mt-2">
     <table class="table table-hover">
         <thead class="table-active">
             <tr>
@@ -31,7 +31,9 @@
                                 <input 
                                     class="form-check-input" type="checkbox"
                                     value="" id="flexCheckDefault"
-                                    <%=val.isPresent ? "checked" : "" %> >
+                                    <%=val.isPresent ? "checked" : "" %>
+                                    <%=owner ? "" : "disabled" %>
+                                >
                             </div>
                         </td>
                     <% } %>

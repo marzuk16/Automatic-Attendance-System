@@ -1,19 +1,21 @@
 <%- include('../../../partials/header.ejs') %>
     <form action="/courses/take-attendance/<%= course._id %>" method="POST">
         <div class="row mb-2">
-            <div class="container-fluid">
-                <div class="col-md-8 offset-md-2">
-                    <div class="row">
-                        <div class="card card-body mx-5 my-3">
-                            <button
-                                type="submit" value="takeAttendance"
-                                class="btn btn-primary btn-sm my-2"
-                                name="action" <%= attendances.length ? "" : "disabled"%> 
-                            >Take Attendance</button>
+            <% if (owner) { %>
+                <div class="container-fluid">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="row">
+                            <div class="card card-body mx-5 my-3">
+                                <button
+                                    type="submit" value="takeAttendance"
+                                    class="btn btn-primary btn-sm my-2"
+                                    name="action" <%= attendances.length ? "" : "disabled"%> 
+                                >Take Attendance</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            <% } %>
 
             <div class="card card-body mx-5">
                 <h4 class="text-center mb-4">Your Attendance List</h4>
@@ -32,7 +34,7 @@
                             </span>
                         </h5>
                     </div>
-                    <% if (attendances.length) { %>
+                    <% if (attendances.length && owner) { %>
                         <div class="col-md-6 d-flex flex-row-reverse">
                             <div class="form-group">
                                 <input type="text" name="userId" id="userId" class="pb-1 text-center form"
@@ -43,17 +45,19 @@
 
                             </div>
                         </div>
-                        <% } %>
+                    <% } %>
 
                 </div>
 
                 <div class="row">
                     <% if (attendances.length) { %>
                         <%- include("./attendanceTable.ejs") %>
-                        <button type="submit" value="update" style="width: 80px;"
-                            class="btn btn-primary btn-sm my-2" name="action">
-                            update
-                        </button>
+                        <% if (owner) { %>
+                            <button type="submit" value="update" style="width: 80px;"
+                                class="btn btn-primary btn-sm my-2" name="action">
+                                update
+                            </button>
+                        <% } %>
                     <% } else { %>
                      <div class="container my-5 text-center">
                         <h1>No one joined in this course !</h1>

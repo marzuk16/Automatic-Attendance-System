@@ -53,8 +53,12 @@
                     <% if (attendances.length) { %>
                         <%- include("./attendanceTable.ejs") %>
                         <% if (owner) { %>
-                            <button type="submit" value="update" style="width: 80px;"
-                                class="btn btn-primary btn-sm my-2" name="action">
+                            <button
+                                type="submit" value="update" style="width: 80px;"
+                                class="btn btn-primary btn-sm my-2" name="action"
+                                method="POST"
+                                onclick = "GetCellValues('<%= attendances[0].course%>')"
+                            >
                                 update
                             </button>
                         <% } %>
@@ -68,7 +72,6 @@
             </div>
         </div>
     </form>
-
     <%- include("../../../partials/footer.ejs") %>
 
         </body>

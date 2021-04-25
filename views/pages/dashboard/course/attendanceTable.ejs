@@ -1,5 +1,5 @@
 <div class="col-md-12 bg-white rounded shadow mt-2">
-    <table class="table table-hover">
+    <table class="table table-hover" id="table">
         <thead class="table-active">
             <tr>
                 <th scope="col">Id \ Date</th>
@@ -29,10 +29,11 @@
                             <!-- for checkbox -->
                             <div class="form-check">
                                 <input 
-                                    class="form-check-input" type="checkbox"
+                                    class="attedanceCheck form-check-input" type="checkbox"
                                     value="" id="flexCheckDefault"
+                                    onclick = getValue(this)
                                     <%=val.isPresent ? "checked" : "" %>
-                                    <%=owner ? "" : "disabled" %>
+                                    <%#=owner ? "" : "disabled" %>
                                 >
                             </div>
                         </td>
@@ -42,3 +43,65 @@
         </tbody>
     </table>
 </div>
+
+<script>
+
+let value = [];
+function getValue(inputTag) {
+    //console.log(tr);
+
+    let td = inputTag.parentElement.parentElement
+    let tr = td.parentElement;
+
+    let rowIdx = tr.rowIndex;
+    let colIdx = td.cellIndex;
+
+    let userName = tr.cells[0].innerText.trim();
+
+    let table = document.getElementById('table');
+    let colName = table.rows[0].cells[colIdx].innerHTML.trim();
+
+    let isChecked = inputTag.checked
+
+/*     console.log("Date: ", colName)
+    console.log("Username: ", username);
+    // console.log("Cell : " + rowIdx, colIdx);
+    console.log("Ischecked: ", isChecked); */
+    let flag = true;
+    for(let [ind, val] of value.entries()){
+        if( (val.userName === userName) && (val.colName === colName)){
+            value[ind].isChecked = isChecked;
+            flag = false;
+            break;
+        }
+    }
+
+    if(flag){
+        let x = {
+            userName,
+            colName,
+            isChecked
+        }
+        value.push(x);
+    }
+}
+
+function GetCellValues(courseId) {
+    console.log(value);
+    // let url = `http://localhost:3000/courses/create`;
+    let url = `http://localhost:3000/courses/attendance/update/${courseId}`;
+    $.ajax({
+    type: "POST",
+    url,
+    data: JSON.stringify(value),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    error: function() {
+        console.log("ajax call got error");
+    },
+    success: function() {
+        console.log("ajax call success");
+    }
+    });
+}
+</script>

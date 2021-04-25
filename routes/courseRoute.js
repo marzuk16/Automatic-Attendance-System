@@ -10,6 +10,7 @@ const {
     myAttendanceGetController,
     takeAttendanceGetController,
     takeAttendancePostController,
+    updateAttendancePostController,
     joinClassPostController
 } = require("../controllers/courseController");
 
@@ -22,6 +23,9 @@ router.post("/take-attendance/:courseId", isAuthenticated, takeAttendancePostCon
 router.get("/take-attendances/:courseId", 
     isAuthenticated,
     myAttendanceGetController
+);
+
+router.post("/attendance/update/:courseId", isAuthenticated, updateAttendancePostController
 );
 
 router.post("/join", isAuthenticated, joinClassValidator, joinClassPostController);

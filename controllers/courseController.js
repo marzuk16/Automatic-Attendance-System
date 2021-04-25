@@ -38,6 +38,7 @@ exports.createCourseGetController = async (req, res, next) => {
 exports.createCoursePostController = async (req, res, next) => {
 
     //let courses = await Course.find({author: req.user._id});
+    // return console.log(req.body);
 
     let errors = validationResult(req).formatWith(errorFormatter);
     console.log("Errors: ", errors.mapped());
@@ -246,7 +247,6 @@ exports.takeAttendancePostController = async (req, res, next) => {
         for(let val of attendances.value){
             if(val.day === currentDay()){
                 return res.redirect(`/courses/take-attendnace/${courseId}`);
-                // return res.redirect("/courses/take-attendance/:courseId");
             }
         }
         let tmp = {
@@ -282,10 +282,6 @@ exports.takeAttendancePostController = async (req, res, next) => {
         });
 
     }    
-    if (req.body.action === "update") {
-        //code here
-        console.log("update");
-    }
     if (req.body.action === "Search") {
         // console.log("search");
         const {userId, date} = req.body;
@@ -380,12 +376,64 @@ exports.takeAttendancePostController = async (req, res, next) => {
     }
     if (req.body.action === "takeAttendance") {
         //code here
+        console.log(req.body);
         let today = currentDay();
         
         console.log("Take Attendance", today);
         return ;
     }
 
+};
+
+exports.updateAttendancePostController = async (req, res, next) => {
+    // console.log("req.body: ", req.body.userName);
+    let updatedTable = req.body;
+
+    let profile = await Profile.findOne({ user: req.user._id });
+    if (!profile)
+        return res.redirect("/dashboard/create-profile");
+
+    let courseId = req.params.courseId;
+
+    let course = await Course.findOne({ author: req.user._id, _id: courseId });
+    if(!course){
+        req.flash("fail", "Course not found!");
+        return res.redirect(`/dashboard`);
+    }
+
+    // userName,colName,isChecked
+    for(let i = 0; i < updatedTable.length; i++){
+
+        let table = updatedTable[i];
+        let user = await User.findOne({userId: table.userName});
+
+        let attendance = await Attendance.findOne({course: courseId, studentId: user._id});
+        if(attendance){
+            attendance = attendance.toJSON();
+            let value = attendance.value;
+
+            for(let ind = 0; ind < value.length; ind++){
+                let val = value[ind];
+
+               if(table.colName == val.day){
+                console.log( attendance.studentId, " : ", table.colName, " : ", table.isChecked);
+                console.log( attendance.studentId, " : ", val.day, " : ", val.isPresent);
+                   value[ind].isPresent = table.isChecked;
+                   console.log("ind: ", ind);
+               }
+            }
+
+            await Attendance.findOneAndUpdate(
+                {course: courseId, studentId: user._id},
+                {$set: {value}},
+                {new: true}
+            );
+        }
+    }
+
+    req.flash("success", "Update successfull !");
+    return res.redirect(`/courses/take-attendance/${courseId}`);
+    
 };
 
 exports.joinClassPostController = async (req, res, next) => {
@@ -406,6 +454,10 @@ exports.joinClassPostController = async (req, res, next) => {
 
     try {
         let course = await Course.findOne({joiningCode});
+        if (!course) {
+            req.flash("fail", "Join failed!");
+            return res.redirect("/dashboard");
+        }
         let courseId = course._id;
         if(course){
             for(let stdnt of course.joinedStudent){
@@ -420,10 +472,10 @@ exports.joinClassPostController = async (req, res, next) => {
             { $push: { "joinedStudent": req.user._id } },
             { new: true }
         );
-        if (!course) {
+/*         if (!course) {
             req.flash("fail", "Join failed!");
             return res.redirect("/dashboard");
-        }
+        } */
         await Profile.findOneAndUpdate(
             { user: req.user._id },
             { $push: { "joinedClass": course._id } },

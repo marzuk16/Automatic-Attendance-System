@@ -192,11 +192,9 @@ exports.takeAttendanceGetController = async (req, res, next) => {
         for(let stdnt of joinedStudent){
             tmp = await User.findOne({_id: stdnt});
             tmp1 = await Attendance.findOne({ course: courseId, studentId:  stdnt});
-            // console.log("att. value: ", tmp1.studentId);
 
             tmp1 = tmp1?.toJSON();
             tmp1.userId = tmp.userId;
-            // console.log("att. value: ", tmp1.value);
 
             attendances.push(tmp1);
 
@@ -232,40 +230,47 @@ exports.takeAttendancePostController = async (req, res, next) => {
 
     let attendances = [];
     let courseId = req.params.courseId;
+    if(req.body.action === "update"){
+        return res.redirect(`/courses/take-attendance/${courseId}`);
+    }
 
     let profile = await Profile.findOne({ user: req.user._id });
     if (!profile)
         return res.redirect("/dashboard/create-profile");
 
     let course = await Course.findOne({ author: req.user._id, _id: courseId });
-    let { joinedStudent } = course;
+    let { joinedStudent } = course.toJSON();
 
     if(req.body.action === "add"){
-
-        attendances = await Attendance.findOne({course: courseId});
+        // for handling double request
+        // attendances = await Attendance.findOne({course: courseId});
         
-        for(let val of attendances.value){
-            if(val.day === currentDay()){
-                return res.redirect(`/courses/take-attendnace/${courseId}`);
-            }
-        }
-        let tmp = {
-            day: currentDay(),
-            entryTime: "0",
-            isPresent: false
-        };
+        // for(let val of attendances.value){
+        //     if(val.day === currentDay()){
+        //         return res.redirect(`/courses/take-attendnace/${courseId}`);
+        //     }
+        // }
 
         attendances = [];
-        for(let stdnt of course.joinedStudent){
+        for(let stdnt of joinedStudent){
+            console.log("stdnt: ", stdnt);
             let attendancesBSON = await Attendance.findOneAndUpdate(
                 {course: courseId, studentId: stdnt},
-                {$push: {"value": tmp}},
+                {$push: {"value": 
+                        {
+                            day: currentDay(),
+                            entryTime: "0",
+                            isPresent: false
+                        }
+                    }
+                },
                 {new: true}
             );
 
             attendancesBSON = attendancesBSON.toJSON();
             tmp = await User.findOne({_id: attendancesBSON.studentId});
             attendancesBSON.userId = tmp.userId;
+            console.log("attendancesBSON: ", attendancesBSON);
 
             attendances.push(attendancesBSON);
         }
@@ -386,7 +391,6 @@ exports.takeAttendancePostController = async (req, res, next) => {
 };
 
 exports.updateAttendancePostController = async (req, res, next) => {
-    // console.log("req.body: ", req.body.userName);
     let updatedTable = req.body;
 
     let profile = await Profile.findOne({ user: req.user._id });
@@ -405,6 +409,7 @@ exports.updateAttendancePostController = async (req, res, next) => {
     for(let i = 0; i < updatedTable.length; i++){
 
         let table = updatedTable[i];
+
         let user = await User.findOne({userId: table.userName});
 
         let attendance = await Attendance.findOne({course: courseId, studentId: user._id});
@@ -416,10 +421,7 @@ exports.updateAttendancePostController = async (req, res, next) => {
                 let val = value[ind];
 
                if(table.colName == val.day){
-                console.log( attendance.studentId, " : ", table.colName, " : ", table.isChecked);
-                console.log( attendance.studentId, " : ", val.day, " : ", val.isPresent);
                    value[ind].isPresent = table.isChecked;
-                   console.log("ind: ", ind);
                }
             }
 

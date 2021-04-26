@@ -21,16 +21,16 @@
                 <h4 class="text-center mb-4">Your Attendance List</h4>
 
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>
-                            <span class="courseInfoInattendance p-2 mr-3">
+                <div class="row border-top border-danger">
+                    <div class="col-md-6 d-flex">
+                        <h5 class="mt-3">
+                            <span class="courseInfoInattendance p-2 mr-2">
                                 <%= course.title %> - <%= course.batch %>
                             </span>
-                            <span class="courseInfoInattendance p-2 mr-3">
+                            <span class="courseInfoInattendance p-2 mr-2">
                                 <%= course.term %>
                             </span>
-                            <span class="courseInfoInattendance p-2 ml-3">Joining Code: <%= course.joiningCode %>
+                            <span class="courseInfoInattendance p-2">Joining Code: <%= course.joiningCode %>
                             </span>
                         </h5>
                     </div>
@@ -49,7 +49,7 @@
 
                 </div>
 
-                <div class="row">
+                <div class="row border-top border-danger">
                     <% if (attendances.length) { %>
                         <%- include("./attendanceTable.ejs") %>
                         <% if (owner) { %>

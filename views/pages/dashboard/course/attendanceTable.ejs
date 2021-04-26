@@ -76,32 +76,31 @@ function getValue(inputTag) {
         }
     }
 
-    if(flag){
-        let x = {
+    if(flag){ 
+        value.push({
             userName,
             colName,
             isChecked
-        }
-        value.push(x);
+        });
     }
 }
 
 function GetCellValues(courseId) {
     console.log(value);
-    // let url = `http://localhost:3000/courses/create`;
+
     let url = `http://localhost:3000/courses/attendance/update/${courseId}`;
     $.ajax({
-    type: "POST",
-    url,
-    data: JSON.stringify(value),
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    error: function() {
-        console.log("ajax call got error");
-    },
-    success: function() {
-        console.log("ajax call success");
-    }
+        type: "POST",
+        url,
+        data: JSON.stringify(value),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        error: function() {
+            console.log("ajax call got error");
+        },
+        success: function() {
+            console.log("ajax call success");
+        }
     });
 }
 </script>

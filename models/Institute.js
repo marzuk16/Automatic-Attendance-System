@@ -6,7 +6,10 @@ const schemaObj = {
         trim: true,
         required: true
     },
-    status: Boolean,
+    status: {
+        type: Boolean,
+        default: true
+    },
     value: Number
 
 };

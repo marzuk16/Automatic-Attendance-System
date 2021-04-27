@@ -3,7 +3,7 @@ const Institute = require("../models/Institute");
 let title = "Add Institute";
 
 exports.addInstituteGetController = (req, res, next) => {
-    console.log("add get");
+
     res.render("pages/institute/addInstitute",
         {
             title,
@@ -23,7 +23,7 @@ exports.addInstitutePostController = async(req, res, next) => {
 
         const createdInstitute = await institute.save();
 
-        req.flash("success", "Institute added !");
+        // req.flash("success", "Institute added !");
         res.redirect("/institute/add");
 
     } catch (error) {

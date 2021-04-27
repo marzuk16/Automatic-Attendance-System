@@ -4,6 +4,7 @@ const Flash = require("../utils/Flash");
 const Profile = require("../models/Profile");
 const User = require("../models/User");
 const Course = require("../models/Course");
+const Institute = require("../models/Institute");
 
 const errorFomatter = require("../utils/validationErrorFormatter");
 
@@ -43,7 +44,6 @@ exports.dashboardGetController = async (req, res, next) => {
 };
 
 exports.createProfileGetController = async (req, res, next) => {
-    console.log("request", req);
     try {
         let profile = await Profile.findOne({ user: req.user._id });
 
@@ -51,11 +51,15 @@ exports.createProfileGetController = async (req, res, next) => {
             return res.redirect("/dashboard/edit-profile");
         }
 
+        let institute = await Institute.find();
+        // console.log("institute: ", institute);
+
         res.render("pages/dashboard/create-profile",
             {
                 title: "Create Your Profile",
                 flashMessage: Flash.getMessage(req),
-                error: {}
+                error: {},
+                institute
             });
 
     } catch (error) {
@@ -82,8 +86,11 @@ exports.createProfilePostController = async (req, res, next) => {
         email
     } = req.body;
 
-    let institutions = ["BUET", "DU", "RU", "SUB"];
-    let tmp = institutions[institute-1];
+    if(institute == "0"){
+        req.flash("fail", "Choose your Institution name");
+        return res.redirect("/dashboard/create-profile");
+    }
+    let institutions = await Institute.findById({_id: institute});
 
     let profilePics = req.user.profilePics;
     let courses = [];
@@ -91,7 +98,7 @@ exports.createProfilePostController = async (req, res, next) => {
     try {
         let profile = new Profile({
             user: req.user._id,
-            institute: tmp,
+            institute: institutions.name,
             name,
             profilePics,
             courses
@@ -121,11 +128,14 @@ exports.editProfileGetController = async (req, res, next) => {
             return res.redirect("/dashboard/create-profile");
         }
 
+        let institutes = await Institute.find();
+
         res.render("pages/dashboard/edit-profile", {
             title: "Edit Your Profile",
             flashMessage: Flash.getMessage(req),
             profile,
-            error: {}
+            error: {},
+            institutes
         });
 
     } catch (error) {
@@ -135,7 +145,7 @@ exports.editProfileGetController = async (req, res, next) => {
 
 exports.editProfilePostController = async (req, res, next) => {
     let errors = validationResult(req).formatWith(errorFomatter);
-    //console.log("val error: ", errors.mapped());
+
     let {
         institute,
         name,
@@ -156,18 +166,18 @@ exports.editProfilePostController = async (req, res, next) => {
         });
     }
 
-    let institutions = ["BUET", "DU", "RU", "SUB"];
-    let tmp = institutions[institute-1];
-
     try {
-/*         let profile = new Profile({
-            institute: tmp,
-            name
-        }); */
+
+        let updateProfile = { name };
+        if(institute != "0"){
+
+            let institutions = await Institute.findById({_id: institute});
+            updateProfile.institute = institutions.name;
+        }
 
         let updatedProfile = await Profile.findOneAndUpdate(
             {user: req.user._id},
-            {$set: {institute: tmp, name: name}},
+            {$set: updateProfile},
             {new: true}
         );
 
@@ -176,9 +186,8 @@ exports.editProfilePostController = async (req, res, next) => {
             {$set: {email: email}},
             {new: true}
         );
-        
-        console.log("UpdatedUser: ", updatedUser);
-        //console.log("updatedProfile: ", updatedProfile);
+
+        let institutes = await Institute.find();
 
         req.flash("success", "Update Successfull");
 
@@ -187,7 +196,8 @@ exports.editProfilePostController = async (req, res, next) => {
             flashMessage: Flash.getMessage(req),
             profile: updatedProfile,
             user: updatedUser,
-            error: {}
+            error: {},
+            institutes
         });
 
     } catch (error) {

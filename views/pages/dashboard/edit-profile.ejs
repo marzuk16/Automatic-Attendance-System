@@ -39,10 +39,9 @@
                                         >
                                             <option value="0" selected><%= profile.institute %>
                                             </option>
-                                            <option value="1">Bangladesh University Of Engineering and Technology</option>
-                                            <option value="2">Dhaka University</option>
-                                            <option value="3">Rajshahi University</option>
-                                            <option value="4">Stamford University Bangladesh</option>
+                                            <% for( let ins of institutes ) { %>
+                                                <option value="<%= ins._id%>"><%= ins.name%></option>
+                                            <% } %>
                                         </select>
                                         <div class="invalid-feedback">
                                             <%= error.institute %>

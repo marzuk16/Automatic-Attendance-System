@@ -1,5 +1,3 @@
-/* // Name, User
-
 const { Schema, model } = require("mongoose");
 
 const schemaObj = {
@@ -8,10 +6,8 @@ const schemaObj = {
         trim: true,
         required: true
     },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    }
+    status: Boolean,
+    value: Number
 
 };
 
@@ -19,4 +15,4 @@ const instituteSChema = new Schema(schemaObj, { timestamps: true });
 
 const Institute = model("Institute", instituteSChema);
 
-module.exports = Institute; */
+module.exports = Institute;

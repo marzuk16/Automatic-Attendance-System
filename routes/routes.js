@@ -3,6 +3,7 @@ const dashboardRoute = require("./dashboardRoute");
 const uploadRoute = require("./uploadRoutes");
 const courseRoute = require("./courseRoute");
 const indexRoute = require("./indexRoute");
+const instituteRoute = require("./instituteRoute");
 // const joinCodeRoute = require("./joinCodeRoute");
 
 const routes = [
@@ -25,6 +26,10 @@ const routes = [
     {
         path: "/home",
         handler: indexRoute
+    },
+    {
+        path: "/institute",
+        handler: instituteRoute
     },
     {
         path: "/",

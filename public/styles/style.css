@@ -113,6 +113,13 @@ a {
 	background-color: #F0F2F5;
 }
 
-.attedanceTable{
-	
+.icon{
+	width: 60px;
+	height: 60px;
+	font-size: 20px;
+	display: flex;
+	background: #ffffff;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
 }

@@ -31,8 +31,8 @@ const schemaObj = {
         ref: "Profile"
     },
     status: {
-        type: Number,
-        default: 1
+        type: Boolean,
+        default: true
     }
 };
 

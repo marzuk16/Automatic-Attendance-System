@@ -23,11 +23,9 @@ exports.addInstitutePostController = async(req, res, next) => {
 
         const createdInstitute = await institute.save();
 
-        // req.flash("success", "Institute added !");
         res.redirect("/institute/add");
 
     } catch (error) {
-        //console.log(error);
         next(error);
     }
 };

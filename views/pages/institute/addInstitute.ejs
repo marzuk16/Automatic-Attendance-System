@@ -1,0 +1,36 @@
+<%- include('../../partials/header.ejs') %>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 my-5">
+                <div class="card card-body mx-5">
+                <h4 class="text-center mb-4"><%= title %> </h4>
+                    <form action="/institute/add" method="POST">
+                        <div class="form-group mb-3">
+                          <input
+                            type="text"
+                            name="name"
+                            class="form-control"
+                            id="instituteName"
+                            placeholder="Institute Name"
+                            value = "<%= value.title ? value.title : "" %>" 
+                        >
+                        </div>
+                        <div class="form-group mb-3">
+                            <input
+                                type="submit"
+                                value="Add"
+                                class="btn btn-primary btn-sm my-2"
+                            >
+                        </div>
+                      </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include("../../partials/footer.ejs") %>
+
+    </body>
+
+</html>

@@ -10,7 +10,6 @@ const errorFomatter = require("../utils/validationErrorFormatter");
 
 exports.dashboardGetController = async (req, res, next) => {
 
-    //console.log("req.user: ", req.user);
     try {
         let profile = await Profile.findOne({ user: req.user._id });
 
@@ -25,7 +24,6 @@ exports.dashboardGetController = async (req, res, next) => {
                 
                 myJoinedClass.push(tmp);
             }
-            //console.log("myJoinedClass: ", myJoinedClass);  
 
             return res.render("pages/dashboard/dashboard",
                 {
@@ -52,7 +50,6 @@ exports.createProfileGetController = async (req, res, next) => {
         }
 
         let institute = await Institute.find();
-        // console.log("institute: ", institute);
 
         res.render("pages/dashboard/create-profile",
             {
@@ -69,7 +66,6 @@ exports.createProfileGetController = async (req, res, next) => {
 
 exports.createProfilePostController = async (req, res, next) => {
     let errors = validationResult(req).formatWith(errorFomatter);
-    //console.log("val error: ", errors.mapped());
 
     if(!errors.isEmpty()){
         res.render("pages/dashboard/create-profile",{
@@ -121,7 +117,6 @@ exports.createProfilePostController = async (req, res, next) => {
 
 
 exports.editProfileGetController = async (req, res, next) => {
-    //console.log("Req: ", req);
     try {
         let profile = await Profile.findOne({user: req.user._id});
         if(!profile){

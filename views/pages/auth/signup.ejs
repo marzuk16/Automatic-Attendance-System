@@ -20,13 +20,14 @@
                             </div>
                         </div>
                         <div class="form-group m-3">
-                            <input
+                            <input 
                                 type="email"
                                 name="email"
                                 id="email"
                                 class="form-control <%= error.email ? "is-invalid" : "" %>"
                                 value="<%= values.email ? values.email:"" %>"
-                                placeholder="Enter Email"
+                                aria-describedby="emailHelp"
+                                placeholder="Enter email"
                             >
                             <div class="invalid-feedback">
                                 <%= error.email && error.email %> 

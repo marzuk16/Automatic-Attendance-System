@@ -17,7 +17,11 @@ const schemaObj = {
         day: String,
         entryTime: String,
         isPresent: Boolean
-    }]
+    }],
+    status: {
+        type: Boolean,
+        default: true
+    }
 };
 
 const attendanceSchema = new Schema(schemaObj, { timestamps: true });

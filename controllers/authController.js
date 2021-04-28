@@ -22,25 +22,23 @@ exports.signupGetController = (req, res, next) => {
 };
 
 exports.signupPostController = async (req, res, next) => {
-    //console.log(req.body);
     const { userId, email, password } = req.body;
+    console.log("email: ", email);
 
     let errors = validationResult(req).formatWith(errorFormatter);
 
     if (!errors.isEmpty()) {
-        //return console.log(errors.mapped());
 
         return res.render("pages/auth/signup",
-            {
-                title: "Create A New Account",
-                error: errors.mapped(),
-                values: {
-                    userId,
-                    email
-                },
-                flashMessage: {}
-                //flashMessage: Flash.getMessage(req)
-            });
+        {
+            title: "Create A New Account",
+            error: errors.mapped(),
+            values: {
+                userId,
+                email
+            },
+            flashMessage: {}
+        });
     }
 
     try {
@@ -55,6 +53,7 @@ exports.signupPostController = async (req, res, next) => {
         let user = new User(userObj);
 
         const createdUser = await user.save(); // object created in db collections
+        console.log("createdUser: ", createdUser);
 
         const msg = {
             to: createdUser.email, // Change to your recipient
@@ -69,7 +68,6 @@ exports.signupPostController = async (req, res, next) => {
         res.redirect("login");
 
     } catch (error) {
-        //console.log(error);
         next(error);
     }
 };
@@ -91,9 +89,6 @@ exports.loginPostController = async (req, res, next) => {
     let errors = validationResult(req).formatWith(errorFormatter);
 
     if (!errors.isEmpty()) {
-        //return console.log(errors.mapped());
-
-        //req.flash("fail", "please check your form !");
 
         return res.render("pages/auth/login",
             {
@@ -103,7 +98,6 @@ exports.loginPostController = async (req, res, next) => {
                 values: {
                     userId
                 }
-                //flashMessage: Flash.getMessage(req)
             });
     }
 
@@ -121,7 +115,6 @@ exports.loginPostController = async (req, res, next) => {
         }
 
         let matched = await bcrypt.compare(password, user.password);
-        //console.log("matched: ", matched);
         if (!matched) {
             req.flash("fail", "Invalid credentials !");
             return res.render("pages/auth/login",
@@ -133,7 +126,6 @@ exports.loginPostController = async (req, res, next) => {
                 });
         }
 
-        //console.log("login success", user);
         req.session.isLoggedIn = true;
         req.session.user = user;
         req.session.save(error => {
@@ -143,11 +135,9 @@ exports.loginPostController = async (req, res, next) => {
             }
             req.flash("success", "Login Successfull !");
             res.redirect("/dashboard");
-            //res.render("pages/auth/login", { title: "Login to your account", error: {} });
         });
 
     } catch (error) {
-        //console.log(error);
         next(error);
     }
 };
@@ -170,14 +160,11 @@ exports.changePasswordPostController = async (req, res, next) => {
     if (!errors.isEmpty()) {
         console.log("errors: ", errors.mapped());
 
-        //req.flash("fail", "please check your form !");
-
         return res.render("pages/auth/changePassword",
             {
                 title: "Change Password",
                 error: errors.mapped(),
                 flashMessage: {},
-                //flashMessage: Flash.getMessage(req)
             });
     }
 
@@ -224,23 +211,18 @@ exports.resetPasswordPostController = (req, res, next) => {
     if (!errors.isEmpty()) {
         console.log("reset errors: ", errors.mapped());
 
-        //req.flash("fail", "please check your form !");
-
         return res.render("pages/auth/resetPassword",
             {
                 title: "Change Password",
                 error: errors.mapped(),
                 flashMessage: {},
-                //flashMessage: Flash.getMessage(req)
             });
     }
 
     try {
-        // let token;
         crypto.randomBytes(32, async (err, buffer) => {
             if (err) console.log("crypto error: ", err);
             const token = await buffer.toString("hex");
-            // console.log("token: ", token);
 
             let user = await User.findOneAndUpdate(
                 { userId },
@@ -275,7 +257,6 @@ exports.resetPasswordPostController = (req, res, next) => {
 
 
     } catch (error) {
-        //console.log(error);
         next(error);
     }
 };
@@ -303,9 +284,6 @@ exports.newPasswordPostController = async (req, res, next) => {
     let errors = validationResult(req).formatWith(errorFormatter);
 
     if (!errors.isEmpty()) {
-        // console.log("new errors: ", errors.mapped());
-
-        //req.flash("fail", "please check your form !");
 
         return res.render("pages/auth/newPassword",
             {
@@ -313,13 +291,11 @@ exports.newPasswordPostController = async (req, res, next) => {
                 error: errors.mapped(),
                 flashMessage: {},
                 token
-                //flashMessage: Flash.getMessage(req)
             });
     }
 
     let { newPassword, confirmPassword } = req.body;
     if (token) {
-        //let user = await User.findOne({resetToken: token});
         let user = await User.findOne({ resetToken: token, expireToken: { $gt: Date.now() } });
         if (!user) {
             req.flash('fail', 'Link expired, Try again!');

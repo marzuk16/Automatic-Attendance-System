@@ -50,8 +50,8 @@ const schemaObj = {
         ref: "Attendance"
     },
     status: {
-        type: Number,
-        default: 1
+        type: Boolean,
+        default: true
     }
 };
 

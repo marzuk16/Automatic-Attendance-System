@@ -22,7 +22,6 @@ let currentDay = () => {
 };
 
 exports.createCourseGetController = async (req, res, next) => {
-    //let courses = await Course.find({author: req.user._id});
     let profile = await Profile.findOne({ user: req.user._id });
     if (!profile)
         return res.redirect("/dashboard/create-profile");
@@ -37,14 +36,10 @@ exports.createCourseGetController = async (req, res, next) => {
 
 exports.createCoursePostController = async (req, res, next) => {
 
-    //let courses = await Course.find({author: req.user._id});
-    // return console.log(req.body);
 
     let errors = validationResult(req).formatWith(errorFormatter);
-    console.log("Errors: ", errors.mapped());
 
     let { title, code, batch, term } = req.body;
-    // console.log("req.body: ", req.body);
 
     if (!errors.isEmpty()) {
 
@@ -77,7 +72,6 @@ exports.createCoursePostController = async (req, res, next) => {
         let hasCourse = await Course.findOne(
             { user: req.user._id, code, batch, term }
         );
-        // console.log("hasCourse: ", hasCourse);
         if (hasCourse) {
             req.flash("fail",
                 "This course already in your list, Please check your dashboard"
@@ -242,18 +236,9 @@ exports.takeAttendancePostController = async (req, res, next) => {
     let { joinedStudent } = course.toJSON();
 
     if(req.body.action === "add"){
-        // for handling double request
-        // attendances = await Attendance.findOne({course: courseId});
-        
-        // for(let val of attendances.value){
-        //     if(val.day === currentDay()){
-        //         return res.redirect(`/courses/take-attendnace/${courseId}`);
-        //     }
-        // }
 
         attendances = [];
         for(let stdnt of joinedStudent){
-            console.log("stdnt: ", stdnt);
             let attendancesBSON = await Attendance.findOneAndUpdate(
                 {course: courseId, studentId: stdnt},
                 {$push: {"value": 
@@ -270,7 +255,6 @@ exports.takeAttendancePostController = async (req, res, next) => {
             attendancesBSON = attendancesBSON.toJSON();
             tmp = await User.findOne({_id: attendancesBSON.studentId});
             attendancesBSON.userId = tmp.userId;
-            console.log("attendancesBSON: ", attendancesBSON);
 
             attendances.push(attendancesBSON);
         }
@@ -288,7 +272,6 @@ exports.takeAttendancePostController = async (req, res, next) => {
 
     }    
     if (req.body.action === "Search") {
-        // console.log("search");
         const {userId, date} = req.body;
         let userid = await User.findOne({userId});
         
@@ -322,7 +305,6 @@ exports.takeAttendancePostController = async (req, res, next) => {
                 }
             }
         }else if(userId){
-            console.log("userId");
             attendances = [];
             attendances.push( await Attendance.findOne({course: courseId, studentId: userid}));
             if(!attendances[0]){
@@ -331,9 +313,7 @@ exports.takeAttendancePostController = async (req, res, next) => {
             }
             attendances[0].toJSON();
             attendances[0].userId = userId;
-            // console.log("attendances: ", attendances.userId);
         }else if(date){
-            console.log("date");
             let index = -1;
             attendances = [];
             for(let studentId of joinedStudent){
@@ -440,7 +420,6 @@ exports.updateAttendancePostController = async (req, res, next) => {
 
 exports.joinClassPostController = async (req, res, next) => {
 
-    // console.log("req: ", req.user);
     let errors = validationResult(req).formatWith(errorFormatter);
 
     if (!errors.isEmpty()) {
@@ -474,10 +453,7 @@ exports.joinClassPostController = async (req, res, next) => {
             { $push: { "joinedStudent": req.user._id } },
             { new: true }
         );
-/*         if (!course) {
-            req.flash("fail", "Join failed!");
-            return res.redirect("/dashboard");
-        } */
+
         await Profile.findOneAndUpdate(
             { user: req.user._id },
             { $push: { "joinedClass": course._id } },

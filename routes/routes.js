@@ -4,7 +4,7 @@ const uploadRoute = require("./uploadRoutes");
 const courseRoute = require("./courseRoute");
 const indexRoute = require("./indexRoute");
 const instituteRoute = require("./instituteRoute");
-// const joinCodeRoute = require("./joinCodeRoute");
+const contactUs = require("./contactUsRoutes");
 
 const routes = [
     {
@@ -30,6 +30,10 @@ const routes = [
     {
         path: "/institute",
         handler: instituteRoute
+    },
+    {
+        path: "/contact-us",
+        handler: contactUs
     },
     {
         path: "/",

@@ -23,9 +23,7 @@ exports.uploadProfilePics = async (req, res, next) => {
                 { _id: req.user._id },
                 { $set: { profilePics } }
             );
-            console.log("oldPic: ", oldProfilePics);
             if (oldProfilePics !== "/uploads/default.jpg") {
-                console.log("unlink profile pic");
                 fs.unlink(`public/${oldProfilePics}`, err => {
                     if (err) console.log(err);
                 });
@@ -72,7 +70,6 @@ exports.removeProfilePics = (req, res, next) => {
         
 
     } catch (error) {
-        console.log(error);
         res.status(500).json({
             message: "Can't remove Profile Pic !"
         });

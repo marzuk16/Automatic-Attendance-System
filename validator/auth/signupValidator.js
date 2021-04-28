@@ -3,15 +3,6 @@ const { body } = require("express-validator");
 const User = require("../../models/User");
 
 module.exports = [
-/*     body("name")
-        .isLength({ min: 1 })
-        .withMessage("Please Provide a name")
-        .trim(),
-
-    body("institute")
-        .isLength({ min: 1 })
-        .withMessage("Please Provide an institute name")
-        .trim(), */
 
     body("userId")
         .isLength({ min: 1 }).withMessage("Please Provide an ID")
@@ -38,9 +29,4 @@ module.exports = [
             }
             return true;
         }),
-
-    /*     body("profilePics")
-            .isLength({ min: 1 })
-            .withMessage("Please provide a pic") */
-
 ];

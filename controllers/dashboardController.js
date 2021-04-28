@@ -41,6 +41,35 @@ exports.dashboardGetController = async (req, res, next) => {
     }
 };
 
+exports.getProfileConroller = async (req, res, next) => {
+    let userId = req.params.userId;
+
+    console.log("........userId: ", userId);
+
+    try {
+
+        let profile = await Profile.findOne({user: req.user._id});
+        if(!profile){
+            return res.redirect("/dashboard/create-profile");
+        }
+
+        let student = await User.findOne({userId});
+        profile = await Profile.findOne({user: student._id});
+
+        res.render("pages/dashboard/profile", {
+            title: "Students Profile",
+            flashMessage: Flash.getMessage(req),
+            profile,
+            student,
+            error: {},
+            institutes: {}
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.createProfileGetController = async (req, res, next) => {
     try {
         let profile = await Profile.findOne({ user: req.user._id });

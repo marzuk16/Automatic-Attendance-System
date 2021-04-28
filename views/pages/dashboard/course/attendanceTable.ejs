@@ -22,7 +22,9 @@
             <% for( let attend of attendances) { %>
                 <tr>
                     <th scope="row">
-                        <%= attend.userId ? attend.userId : "" %>
+                        <a href="/dashboard/profile/<%= attend.userId%>" >
+                            <%= attend.userId ? attend.userId : "" %>
+                        </a>
                     </th>
                     <% for (let val of attend.value) { %>
                         <td>

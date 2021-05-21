@@ -1,77 +1,90 @@
-<%- include('../../../partials/header.ejs') %>
+<%- include("../../../partials/body.ejs") %>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6 offset-md-3 my-5">
-                <div class="card card-body mx-5">
-                <h4 class="text-center mb-4">Create Course To Your Attendance List</h4>
-                    <form action="/courses/create" method="POST">
-                        <div class="form-group mb-3">
-                          <input
-                            type="text"
-                            name="title"
-                            class="form-control <%= error.title ? "is-invalid" : "" %>"
-                            id="courseTitle"
-                            placeholder="Course title"
-                            value = "<%= value.title ? value.title : "" %>" 
-                        >
-                            <div class="invalid-feedback">
-                                <%= error.title %>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                          <input
-                            type="text"
-                            name="code"
-                            class="form-control <%= error.code ? "is-invalid" : "" %>"
-                            id="courseCode"
-                            placeholder="Course Code"
-                            value = "<%= value.code ? value.code : "" %>" 
-                           >
-                           <div class="invalid-feedback">
-                                <%= error.code %>
-                           </div>
-                        </div>
-                        <div class="form-group mb-3">
-                          <input
-                            type="text"
-                            name="batch"
-                            class="form-control <%= error.batch ? "is-invalid" : "" %>"
-                            id="batch"
-                            placeholder="Batch (with section)"
-                            value = "<%= value.batch ? value.batch : "" %>" 
-                           >
-                           <div class="invalid-feedback">
-                                <%= error.batch %>
-                           </div>
-                        </div>
-                        <div class="form-group mb-3">
-                          <input
-                            type="text"
-                            name="term"
-                            class="form-control <%= error.term ? "is-invalid" : "" %>"
-                            id="term"
-                            placeholder="Term e.g. Spring 2021"
-                            value = "<%= value.term ? value.term : "" %>" 
-                           >
-                           <div class="invalid-feedback">
-                                <%= error.term %>
-                           </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <input
-                                type="submit"
-                                value="Create"
-                                class="btn btn-primary btn-sm my-2"
+
+        <div class="container container-fluid"style="min-height: 495px;">
+            <div class="row p-3">
+                <div class="col-md-12">
+                    <p class="p-3" style="height: 30px">
+                       
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mt-5">
+                    <h5 id="qoutes"></h5>
+                </div>
+                <div class="col-md-5 offset-md-1">
+                    <h4 class="text-center mb-3 ">Create Course</h4>
+                    <div class="card card-body">
+                        <form action="/courses/create" method="POST">
+                            <div class="form-group mb-3">
+                              <input
+                                type="text"
+                                name="title"
+                                class="form-control <%= error.title ? "is-invalid" : "" %>"
+                                id="courseTitle"
+                                placeholder="Course title"
+                                value = "<%= value.title ? value.title : "" %>" 
                             >
-                        </div>
-                      </form>
+                                <div class="invalid-feedback">
+                                    <%= error.title %>
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                              <input
+                                type="text"
+                                name="code"
+                                class="form-control <%= error.code ? "is-invalid" : "" %>"
+                                id="courseCode"
+                                placeholder="Course Code"
+                                value = "<%= value.code ? value.code : "" %>" 
+                               >
+                               <div class="invalid-feedback">
+                                    <%= error.code %>
+                               </div>
+                            </div>
+                            <div class="form-group mb-3">
+                              <input
+                                type="text"
+                                name="batch"
+                                class="form-control <%= error.batch ? "is-invalid" : "" %>"
+                                id="batch"
+                                placeholder="Batch (with section)"
+                                value = "<%= value.batch ? value.batch : "" %>" 
+                               >
+                               <div class="invalid-feedback">
+                                    <%= error.batch %>
+                               </div>
+                            </div>
+                            <div class="form-group mb-3">
+                              <input
+                                type="text"
+                                name="term"
+                                class="form-control <%= error.term ? "is-invalid" : "" %>"
+                                id="term"
+                                placeholder="Term e.g. Spring 2021"
+                                value = "<%= value.term ? value.term : "" %>" 
+                               >
+                               <div class="invalid-feedback">
+                                    <%= error.term %>
+                               </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <input
+                                    type="submit"
+                                    value="Create"
+                                    class="btn btn-primary btn-sm my-2"
+                                >
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <%- include("../../../partials/footer.ejs") %>
+    <script src="/scripts/qoutes.js"></script>
 
     </body>
 

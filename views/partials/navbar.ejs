@@ -10,17 +10,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <% if (isLoggedIn) { %>
-                    <li class="nav-item border-left border-danger px-2">
+                    <li class="nav-item px-2">
                         <a class="nav-link text-white" href="/dashboard"> Dashboard </a>
                     </li>
 
-                    <li class="nav-item border-left border-danger px-2">
+                    <li class="nav-item px-2">
                         <a class="nav-link text-white" href="/courses/create">Create Class</a>
                     </li>
-                    <li class="nav-item border-left border-danger px-2">
+                    <li class="nav-item px-2">
                         <a class="nav-link text-white" onclick="togglePopup()">Join Class</a>
                     </li>
-                    <li class="nav-item dropdown border-left border-danger px-2">
+                    <li class="nav-item dropdown px-2">
                         <img src=" <%= user.profilePics %> " alt="profile pics" class="img-fluid rounded-circle"
                             id="profilePics" style="width: 45px; height: 40px;">
                     </li>
@@ -37,18 +37,49 @@
                     </li>
 
                     <% } else { %>
-                        <li class="nav-item border-left border-danger px-2">
+                        <li class="nav-item px-2">
                             <a class="nav-link text-white" href="/auth/login">Login</a>
                         </li>
-                        <li class="nav-item border-left border-danger px-2">
+                        <li class="nav-item px-2">
                             <a class="nav-link text-white" href="/auth/signup">Signup</a>
                         </li>
-                        <li class="nav-item border-left border-danger px-2">
+                        <li class="nav-item px-2">
                             <a class="nav-link text-white" href="/contact-us">Contact Us</a>
                         </li>
                     <% } %>
             </ul>
+            <div class="text-white" id="date"></div>
         </div>
     </div>
 </nav>
 <%- include("./joinClass.ejs") %>
+<script>
+
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu','Fri', 'Sat'];
+
+    let date = new Date();
+    let bar = days[date.getDay()];
+    let year = date.getFullYear();
+    let month = months[date.getMonth()];
+    let day = date.getDate();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+
+    date = `${bar}, ${day}-${month}-${year} ${hours} : ${minutes}`;
+    document.getElementById("date").innerHTML = date;
+
+    setInterval(() => {
+
+    date = new Date();
+    bar = days[date.getDay()];
+    year = date.getFullYear();
+    month = months[date.getMonth()];
+    day = date.getDate();
+    hours = date.getHours();
+    minutes = date.getMinutes();
+
+    date = `${bar}, ${day}-${month}-${year} ${hours} : ${minutes}`;
+    document.getElementById("date").innerHTML = date;
+    },1000)
+</script>

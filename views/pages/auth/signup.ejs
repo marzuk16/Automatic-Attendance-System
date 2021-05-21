@@ -1,76 +1,81 @@
-<%- include("../../partials/header.ejs") %>
+<%- include("../../partials/body.ejs") %>
 
-    <div class="container myContainer">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="card card-body mt-4">
-                    <h4 class="text-center">Create A New Acoount</h4>
-                    <form action="/auth/signup" method="POST">
-                        <div class="form-group m-3">
-                            <input
-                                type="text"
-                                name="userId"
-                                id="userId"
-                                class="form-control <%= error.userId ? "is-invalid" : "" %>"
-                                value="<%= values.userId ? values.userId:"" %>"
-                                placeholder="Enter Your Institution ID"
-                            >
-                            <div class="invalid-feedback">
-                                <%= error.userId && error.userId %> 
-                            </div>
-                        </div>
-                        <div class="form-group m-3">
-                            <input 
-                                type="email"
-                                name="email"
-                                id="email"
-                                class="form-control <%= error.email ? "is-invalid" : "" %>"
-                                value="<%= values.email ? values.email:"" %>"
-                                aria-describedby="emailHelp"
-                                placeholder="Enter email"
-                            >
-                            <div class="invalid-feedback">
-                                <%= error.email && error.email %> 
-                            </div>
-                        </div>
-                        <div class="form-group m-3">
-                            <input
-                                type="password"
-                                name="password"
-                                id="password"
-                                class="form-control <%= error.password ? "is-invalid" : "" %> "
-                                placeholder="Enter password(Min 6 character)"
-                            >
-                            <div class="invalid-feedback">
-                                <%= error.password && error.password %> 
-                            </div>
-                        </div>
-                        <div class="form-group m-3">
-                            <input
-                                type="password"
-                                name="cPassword"
-                                id="cPassword"
-                                class="form-control <%= error.cPassword ? "is-invalid" : "" %> "
-                                placeholder="Confirm Password"
-                            >
-                            <div class="invalid-feedback">
-                                <%= error.cPassword && error.cPassword %> 
-                            </div>
-                        </div>
-                        <div class="form-group m-3">
+<div class="container myContainer">
+    <div class="row">
+        <div class="col-md-6 mt-5">
+            <h5 class="mt-5" id="qoutes"></h5>
+        </div>
+        <div class="col-md-5 offset-md-1 mt-4">
+            <h4 class="text-center mb-3 ">Create A New Acoount</h4>
+
+            <div class="card card-body">
+                <form action="/auth/signup" method="POST">
+                    <div class="form-group m-3">
                         <input
-                            type="submit"
-                            class="btn btn-primary form-group ms-3"
-                            value="Signup"
-                        ></div>
-                    </form>
-                    <a href="login" class="my-3 text-center">Already have an account?</a>
-                </div>
-
+                            type="text"
+                            name="userId"
+                            id="userId"
+                            class="form-control <%= error.userId ? "is-invalid" : "" %>"
+                            value="<%= values.userId ? values.userId:"" %>"
+                            placeholder="Enter Your Institution ID"
+                        >
+                        <div class="invalid-feedback">
+                            <%= error.userId && error.userId %> 
+                        </div>
+                    </div>
+                    <div class="form-group m-3">
+                        <input 
+                            type="email"
+                            name="email"
+                            id="email"
+                            class="form-control <%= error.email ? "is-invalid" : "" %>"
+                            value="<%= values.email ? values.email:"" %>"
+                            aria-describedby="emailHelp"
+                            placeholder="Enter email"
+                        >
+                        <div class="invalid-feedback">
+                            <%= error.email && error.email %> 
+                        </div>
+                    </div>
+                    <div class="form-group m-3">
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            class="form-control <%= error.password ? "is-invalid" : "" %> "
+                            placeholder="Enter password(Min 6 character)"
+                        >
+                        <div class="invalid-feedback">
+                            <%= error.password && error.password %> 
+                        </div>
+                    </div>
+                    <div class="form-group m-3">
+                        <input
+                            type="password"
+                            name="cPassword"
+                            id="cPassword"
+                            class="form-control <%= error.cPassword ? "is-invalid" : "" %> "
+                            placeholder="Confirm Password"
+                        >
+                        <div class="invalid-feedback">
+                            <%= error.cPassword && error.cPassword %> 
+                        </div>
+                    </div>
+                    <div class="form-group m-3">
+                    <input
+                        type="submit"
+                        class="btn btn-primary form-group ms-3"
+                        value="Signup"
+                    ></div>
+                </form>
+                <a href="login" class="my-3 text-center">Already have an account?</a>
             </div>
         </div>
     </div>
+</div>
+
 <%- include("../../partials/footer.ejs") %>
+<script src="/scripts/qoutes.js"></script>
 
 </body>
 

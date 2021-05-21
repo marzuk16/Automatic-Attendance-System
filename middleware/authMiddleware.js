@@ -7,7 +7,7 @@ exports.bindUserWithRequest = () => {
         }
 
         try {
-            let user = await User.findById(req.session.user._id);
+            let user = await User.findById(req.session.user._id).select({password: 0});
             req.user = user;
             next();
 

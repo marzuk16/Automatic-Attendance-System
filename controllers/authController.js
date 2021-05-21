@@ -133,6 +133,7 @@ exports.loginPostController = async (req, res, next) => {
                 console.log(error);
                 return next(error);
             }
+            console.log("loggedin user", req.user);
             req.flash("success", "Login Successfull !");
             res.redirect("/dashboard");
         });
@@ -143,6 +144,7 @@ exports.loginPostController = async (req, res, next) => {
 };
 
 exports.changePasswordGetController = async (req, res, next) => {
+    console.log("loggedIn user", req.user);
     res.render('pages/auth/changePassword', {
         title: 'Change Password',
         error: {},

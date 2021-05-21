@@ -1,5 +1,8 @@
 const { validationResult } = require("express-validator");
 
+const xlsx = require("xlsx");
+const path = require("path");
+
 const Attendance = require("../models/Attendance");
 const Course = require("../models/Course");
 const Profile = require("../models/Profile");
@@ -482,6 +485,87 @@ exports.joinClassPostController = async (req, res, next) => {
         req.flash("success", "Join success");
         res.redirect("/dashboard");
 
+    } catch (error) {
+        next(error);
+    }
+};
+
+const exportExcel = (data, workSheetColumnNames, workSheetName, filePath) => {
+
+    const workBook = xlsx.utils.book_new();
+    const workSheetData = [
+        workSheetColumnNames,
+        ... data
+    ];
+
+    const workSheet = xlsx.utils.aoa_to_sheet(workSheetData);
+    xlsx.utils.book_append_sheet(workBook, workSheet, workSheetName);
+    xlsx.writeFile(workBook, path.resolve(filePath));
+
+};
+
+const exportDataToExcel = (dataMatrix, workSheetColumnNames, workSheetName, filePath) => {
+    console.log("dataMatrix: ", dataMatrix);
+    const data = dataMatrix.map(x => {
+        let tmp = [x[0]];
+        
+        for(let i = 1; i<x.length; i++)
+            x[i].isPresent ? tmp.push(1) : tmp.push(0);
+
+        return tmp;
+    });
+    console.log("tmp: ", data);
+    exportExcel(data, workSheetColumnNames, workSheetName, filePath);
+};
+
+exports.exportAttendanceGetController = async (req, res, next) => {
+    console.log("export clicked");
+
+    let courseId = req.params.courseId;
+    try {
+        let profile = await Profile.findOne({ user: req.user._id });
+        if (!profile)
+            return res.redirect("/dashboard/create-profile");
+
+        console.log("courseId: ", courseId);
+        let course = await Course.findOne({ _id: courseId });
+        if (!course) {
+            req.flash("fail", "Invalid request");
+            return res.redirect(`/courses/take-attendance/${courseId}`);
+        }
+
+        let { joinedStudent } = course;
+        
+        let data = [];
+
+        for (let stdnt of joinedStudent) {
+            let student = await User.findById({_id: stdnt});
+            let attendance = await Attendance.findOne({
+                course: courseId,
+                studentId: stdnt
+            });
+
+            let tmp = [student.userId, ... attendance.value];
+            
+            data.push(tmp);
+        }
+
+        console.log("data: ", data);
+
+        let workSheetColumnName = ['Id \\ Date'];
+
+        for(let i = 1; i<data[0].length; i++) 
+            workSheetColumnName.push(data[0][i].day);
+
+        let workSheetName = course.title;
+        let filePath = "public/outputFiles/attendances.xlsx";
+
+        await exportDataToExcel(data, workSheetColumnName, workSheetName, filePath);
+
+        return res.download("public/outputFiles/attendances.xlsx", err => {
+            console.log("download error: ", err);
+        });
+        
     } catch (error) {
         next(error);
     }

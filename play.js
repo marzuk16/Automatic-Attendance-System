@@ -1,11 +1,16 @@
-let today = new Date();
-let date = today.getFullYear().toString() + '-';
-if(today.getMonth()+1 < 10) date += '0';
-date += today.getMonth()+1 + '-';
+let date = new Date();
 
-if(today.getDate() < 10) date += '0';
-date += today.getDate().toString();
+let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu','Fri', 'Sat'];
 
-console.log(date);
+let bar = days[date.getDay()];
+let year = date.getFullYear();
+let month = months[date.getMonth()];
+let day = date.getDate();
+let hours = date.getHours();
+let minutes = date.getMinutes();
 
-console.log(today.getDate() , " ", today.getMonth()+1, " ", today.getFullYear());
+date = `${bar} ${day}-${month}-${year} ${hours}:${minutes}`;
+
+let x = `আত্মতৃপ্তিতে ভোগা সংকীর্ণ জ্ঞানের পরিচয়।`;
+console.log(date, x);

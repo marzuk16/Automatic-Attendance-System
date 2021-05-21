@@ -558,11 +558,11 @@ exports.exportAttendanceGetController = async (req, res, next) => {
             workSheetColumnName.push(data[0][i].day);
 
         let workSheetName = course.title;
-        let filePath = "public/outputFiles/attendances.xlsx";
+        let filePath = `public/outputFiles/${course.title}-${course.batch}-${course.term}.xlsx`;
 
         await exportDataToExcel(data, workSheetColumnName, workSheetName, filePath);
 
-        return res.download("public/outputFiles/attendances.xlsx", err => {
+        return res.download(filePath, err => {
             console.log("download error: ", err);
         });
         

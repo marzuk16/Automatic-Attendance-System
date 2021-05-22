@@ -557,7 +557,7 @@ exports.exportAttendanceGetController = async (req, res, next) => {
         for(let i = 1; i<data[0].length; i++) 
             workSheetColumnName.push(data[0][i].day);
 
-        let workSheetName = course.title;
+        let workSheetName = `${course.title}-${course.batch}-${course.term}`;
         let filePath = `public/outputFiles/${course.title}-${course.batch}-${course.term}.xlsx`;
 
         await exportDataToExcel(data, workSheetColumnName, workSheetName, filePath);

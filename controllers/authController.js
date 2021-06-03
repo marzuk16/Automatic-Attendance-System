@@ -202,7 +202,7 @@ exports.resetPasswordGetController = async (req, res, next) => {
     res.render('pages/auth/resetPassword', {
         title: 'Change Password',
         error: {},
-        flashMessage: {}
+        flashMessage: Flash.getMessage(req),
     })
 };
 exports.resetPasswordPostController = (req, res, next) => {

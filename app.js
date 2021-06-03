@@ -15,6 +15,8 @@ const dbUser = config.get("db-username");
 const dbUserPass = config.get("db-password");
 const dbName = "attendanceSystem";
 const mongoDBUrl = `mongodb+srv://${dbUser}:${dbUserPass}@cluster0.arzvi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+// const mongoDBUrl = `mongodb://localhost/${dbName}`;
+
 
 //setup view Engine
 app.set("view engine", "ejs");

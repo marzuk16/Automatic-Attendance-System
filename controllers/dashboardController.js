@@ -176,17 +176,22 @@ exports.editProfilePostController = async (req, res, next) => {
         email
     } = req.body;
 
-    if(!errors.isEmpty()){
-        res.render("pages/dashboard/create-profile",{
+    let institutes = await Institute.find();
+    console.log("institutes: ", institutes);
 
-            title: "Create Your Profile",
+    console.log(`institute: ${institute} name: ${name} email: ${email}`);
+    if(!errors.isEmpty()){
+        res.render("pages/dashboard/edit-profile",{
+
+            title: "Update Your Profile",
             flashMessage: Flash.getMessage(req),
             error: errors.mapped(),
             profile: {
                 institute,
                 name,
                 email
-            }
+            },
+            institutes
         });
     }
 
@@ -210,8 +215,6 @@ exports.editProfilePostController = async (req, res, next) => {
             {$set: {email: email}},
             {new: true}
         );
-
-        let institutes = await Institute.find();
 
         req.flash("success", "Update Successfull");
 

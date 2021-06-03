@@ -10,6 +10,8 @@ const User = require("../models/User");
 
 const Flash = require("../utils/Flash");
 const errorFormatter = require("../utils/validationErrorFormatter");
+const { findOne } = require("../models/User");
+const { info } = require("console");
 
 
 let currentDay = () => {
@@ -39,7 +41,6 @@ exports.createCourseGetController = async (req, res, next) => {
 
 exports.createCoursePostController = async (req, res, next) => {
 
-
     let errors = validationResult(req).formatWith(errorFormatter);
 
     let { title, code, batch, term } = req.body;
@@ -58,7 +59,7 @@ exports.createCoursePostController = async (req, res, next) => {
             }
         });
     }
-
+    
     let joiningCode = Math.random().toString(36).substr(2, 4);
 
     let course = new Course({
@@ -108,6 +109,163 @@ exports.createCoursePostController = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.editCourseGetController = async (req, res, next) => {
+    let profile = await Profile.findOne({ user: req.user._id });
+    if (!profile)
+        return res.redirect("/dashboard/create-profile");
+
+    let courseId = req.params.courseId;
+    try {
+        let course = await Course.findOne({ _id: courseId });
+
+        if (!course) {
+            req.flash("fail", "Course not found!");
+            return res.redirect("/dashboard");
+        }
+
+        let { joinedStudent } = course;
+
+        let studentsList = [];
+
+        for (let student of joinedStudent) {
+            let info = {
+                _id: student
+            }; 
+            let tmp = await Profile.findOne({user: student});
+            info.name = tmp.name;
+            tmp = await User.findOne({_id: student});
+            info.userId = tmp.userId;
+
+            studentsList.push(info);
+        }
+
+        // console.log("studentsList", studentsList);
+
+        res.render("pages/dashboard/course/editCourse", {
+            title: "Edit course",
+            error: {},
+            flashMessage: Flash.getMessage(req),
+            value: course,
+            studentsList
+        });
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+exports.editCoursePostController = async (req, res, next) => {
+    console.log("edit", req.body);
+
+    let errors = validationResult(req).formatWith(errorFormatter);
+
+    let { title, code, batch, term } = req.body;
+    let { courseId } = req.params;
+    console.log("courseId params: ", req.params);
+
+    let studentsList = [];
+    let course = await Course.findOne({ _id: courseId });
+        let { joinedStudent } = course;
+
+        for (let student of joinedStudent) {
+            let info = {
+                _id: student
+            }; 
+            let tmp = await Profile.findOne({user: student});
+            info.name = tmp.name;
+            tmp = await User.findOne({_id: student});
+            info.userId = tmp.userId;
+
+            studentsList.push(info);
+        }
+
+    if (!errors.isEmpty()) {
+        
+        return res.render("pages/dashboard/course/editCourse", {
+            title: "Edit course",
+            error: errors.mapped(),
+            flashMessage: Flash.getMessage(req),
+            value: {
+                title,
+                code,
+                batch,
+                term
+            },
+            studentsList
+        });
+    }
+
+    try {
+        //check this course exits or not
+        let ownCourse = await Course.findOne({_id: courseId, author: req.user._id});
+
+        if ( !ownCourse) {
+            req.flash("fail", "Invalid request");
+            return res.redirect("/dashboard");
+        }
+
+        let hasCourse = await Course.findOne(
+            { author: req.user._id, code, batch, term }
+        );
+
+        if (hasCourse) {
+            req.flash("fail",
+                "This course already in your list, Please check your dashboard"
+            );
+
+            return res.render("pages/dashboard/course/editCourse", {
+                title: "Edit course",
+                error: errors.mapped(),
+                flashMessage: Flash.getMessage(req),
+                value: {
+                    title,
+                    code,
+                    batch,
+                    term
+                },
+                studentsList
+            });
+        }
+
+        let updatedCourse = await Course.findByIdAndUpdate(courseId,
+            {$set: {title: title, code: code, batch: batch, term: term}},
+            {new: true}
+        );
+        req.flash("success", "Course update successfull");
+
+        return res.redirect(`/courses/edit-course/${updatedCourse._id}`);
+
+    } catch (error) {
+        next(error);
+    }
+
+}
+exports.removeStudentFromCoursePostController = async (req, res, next) => {
+
+    let {courseId, studentId} = req.params;
+
+    try {
+
+        await Profile.findOneAndUpdate({user: studentId},
+            { $pull: { "joinedClass": courseId }}
+        );
+
+        await Course.findByIdAndUpdate(courseId,
+            { $pull: { "joinedStudent": studentId }}
+        );
+
+        await Attendance.findOneAndRemove({course: courseId, studentId});
+
+        req.flash("success", "Student remove successdfull");
+
+        return res.redirect(`/courses/edit-course/${courseId}`);
+
+    } catch (error) {
+        next(error);
+    }
+
+}
 
 exports.myAttendanceGetController = async (req, res, next) => {
     //localhost:3000/courses/take-attendances/id
@@ -288,8 +446,10 @@ exports.takeAttendancePostController = async (req, res, next) => {
                 req.flash("fail", " Data not found!");
                 return res.redirect(`/courses/take-attendance/${courseId}`);
             }
+            let flag = true;
             for(let val of attendances.value){
                 if(date == val.day){
+                    flag = false;
                     console.log("matched");
                     let x = {
                         course: attendances.course,
@@ -306,6 +466,10 @@ exports.takeAttendancePostController = async (req, res, next) => {
                     attendances = [];
                     attendances.push(x);
                 }
+            }
+            if(flag){
+                req.flash("fail", " Data not found!");
+                return res.redirect(`/courses/take-attendance/${courseId}`);
             }
         }else if(userId){
             attendances = [];
@@ -368,7 +532,9 @@ exports.takeAttendancePostController = async (req, res, next) => {
         let today = currentDay();
         
         console.log("Take Attendance", today);
-        return ;
+        
+        req.flash("success", "Today's attendance added.");
+        return res.redirect(`/courses/take-attendance/${courseId}`);
     }
 
 };
@@ -433,6 +599,11 @@ exports.joinClassPostController = async (req, res, next) => {
     let profile = await Profile.findOne({ user: req.user._id });
     if (!profile)
         return res.redirect("/dashboard/create-profile");
+    
+    let { sampleImage } = req.user;
+    if(sampleImage === "/uploads/default.jpg"){
+        
+    }
 
     let joiningCode = req.body.joinCode;
 

@@ -33,6 +33,10 @@ const schemaObj = {
     status: {
         type: Boolean,
         default: true
+    },
+    sampleImage: {
+        type: String,
+        default: "/uploads/default.jpg"
     }
 };
 

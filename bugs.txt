@@ -1,2 +1,4 @@
 add attendance validate to backend
-fix shoeing date on attendnace table
+fix showing date on attendnace table
+
+edit profile recheck

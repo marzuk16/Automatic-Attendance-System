@@ -7,10 +7,26 @@
         <div class="card-body my-1 collapse" id="courseListsOwned">
         
         <% for(let course of courses.reverse()){ %>
-            <div class="text-center my-2 pb-1 border-bottom border-info rounded-bottom">
-                <a class = "text-white" href="/courses/take-attendance/<%= course._id %>">
+            <div class="row pb-1 border-bottom border-info rounded-bottom">
+                <div class="col-md-8">
                     <%= course.title %> - <%= course.batch %>
-                </a>
+                </div>
+                <div class="col-md-2">
+                    <a 
+                        class = "text-white text-center" title="Details"
+                        href="/courses/take-attendance/<%= course._id %>"
+                    >
+                        <i class="fas fa-eye pl-3"></i>
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a 
+                        class = "text-white text-center" title="Edit"
+                        href="/courses/edit-course/<%= course._id %>"
+                    >
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </div>
             </div>
         <% } %>
         </div>

@@ -40,10 +40,15 @@
         <div class="card-body my-1 collapse" id="courseLists">
         
         <% for(let course of myJoinedClass.reverse()){ %>
-            <div class="text-center my-2 pb-1 border-bottom border-info rounded-bottom"> 
-                <a class = "text-white" href="/courses/take-attendances/<%= course._id %>">
+            <div class="row pb-1 border-bottom border-info rounded-bottom">
+                <div class="col-md-8">
                     <%= course.title %> - <%= course.batch %>
-                </a>
+                </div>
+                <div class="col-md-4">
+                    <a class = "text-white" href="/courses/take-attendances/<%= course._id %>">
+                        <i class="fas fa-eye pl-3"></i>
+                    </a>
+                </div>
             </div>
         <% } %>
         </div>

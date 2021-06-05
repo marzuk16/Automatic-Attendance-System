@@ -9,7 +9,7 @@ exports.addInstituteGetController = (req, res, next) => {
             title,
             error: {},
             value: {},
-            flashMessage: Flash.getMessage(req),
+            flashMessage: {} //Flash.getMessage(req),
         });
 };
 exports.addInstitutePostController = async(req, res, next) => {

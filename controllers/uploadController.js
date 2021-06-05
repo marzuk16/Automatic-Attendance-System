@@ -42,6 +42,10 @@ exports.uploadProfilePics = async (req, res, next) => {
     }
 };
 
+exports.uploadSamplePic = async (req, res, next) => {
+    
+};
+
 exports.removeProfilePics = (req, res, next) => {
     try {
         let defaultProfile = "/uploads/default.jpg";

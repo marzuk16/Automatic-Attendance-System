@@ -13,6 +13,8 @@ const {
     myAttendanceGetController,
     takeAttendanceGetController,
     takeAttendancePostController,
+    searchAttendancePostController,
+    addAttendancePostController,
     updateAttendancePostController,
     joinClassPostController,
     exportAttendanceGetController
@@ -43,7 +45,17 @@ router.post("/edit-course/remove-student/:courseId/student/:studentId",
     removeStudentFromCoursePostController
 );
 
-router.post("/attendance/update/:courseId", isAuthenticated, updateAttendancePostController
+router.post("/attendances/search/:courseId",
+    isAuthenticated,
+    searchAttendancePostController
+);
+router.post("/attendances/add/:courseId",
+    isAuthenticated,
+    addAttendancePostController
+);
+router.post("/attendances/update/:courseId",
+    isAuthenticated,
+    updateAttendancePostController
 );
 
 router.post("/join", isAuthenticated, joinClassValidator, joinClassPostController);

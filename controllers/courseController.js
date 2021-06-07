@@ -383,7 +383,6 @@ exports.takeAttendanceGetController = async (req, res, next) => {
 exports.takeAttendancePostController = async (req, res, next) => {
     //localhost:3000/courses/take-attendance/id
 
-    let attendances = [];
     let courseId = req.params.courseId;
     if(req.body.action === "update"){
         return res.redirect(`/courses/take-attendance/${courseId}`);
@@ -395,52 +394,41 @@ exports.takeAttendancePostController = async (req, res, next) => {
 
     let course = await Course.findOne({ author: req.user._id, _id: courseId });
     let { joinedStudent } = course.toJSON();
+ 
+    //code here
+    console.log(req.body);
+    let today = currentDay();
+    
+    console.log("Take Attendance", today);
+    
+    req.flash("success", "Today's attendance added.");
+    return res.redirect(`/courses/take-attendance/${courseId}`);
 
-    if(req.body.action === "add"){
+};
 
-        attendances = [];
-        for(let stdnt of joinedStudent){
-            let attendancesBSON = await Attendance.findOneAndUpdate(
-                {course: courseId, studentId: stdnt},
-                {$push: {"value": 
-                        {
-                            day: currentDay(),
-                            entryTime: "0",
-                            isPresent: false
-                        }
-                    }
-                },
-                {new: true}
-            );
+exports.searchAttendancePostController = async (req, res, next) => {
+    console.log("search: ", req.body);
+    const {userId, date} = req.body;
+    let attendances = [];
+    let courseId = req.params.courseId;
 
-            attendancesBSON = attendancesBSON.toJSON();
-            tmp = await User.findOne({_id: attendancesBSON.studentId});
-            attendancesBSON.userId = tmp.userId;
+    try {
+        let profile = await Profile.findOne({ user: req.user._id });
+        if (!profile)
+            return res.redirect("/dashboard/create-profile");
 
-            attendances.push(attendancesBSON);
-        }
-
-        return res.render("pages/dashboard/course/take-attendance.ejs", {
-            title: "Take Attendance",
-            flashMessage: {},
-            error: {},
-            value: {},
-            course,
-            add: true,
-            attendances,
-            owner : true
-        });
-
-    }    
-    if (req.body.action === "Search") {
-        const {userId, date} = req.body;
         let userid = await User.findOne({userId});
-        
+        let course = await Course.findOne({ author: req.user._id, _id: courseId });
+        let { joinedStudent } = course.toJSON();
+
         if(!userId && !date){
+            console.log("null");
             return res.redirect(`/courses/take-attendance/${courseId}`);
         }
+
         if(userId && date){
-            console.log("userId && date", date);
+            console.log("user: ", userId, " date: ", date);
+ 
             attendances = await Attendance.findOne({course: courseId, studentId: userid});
             if(!attendances){
                 req.flash("fail", " Data not found!");
@@ -472,6 +460,8 @@ exports.takeAttendancePostController = async (req, res, next) => {
                 return res.redirect(`/courses/take-attendance/${courseId}`);
             }
         }else if(userId){
+            console.log("user: ", userId);
+
             attendances = [];
             attendances.push( await Attendance.findOne({course: courseId, studentId: userid}));
             if(!attendances[0]){
@@ -481,6 +471,8 @@ exports.takeAttendancePostController = async (req, res, next) => {
             attendances[0].toJSON();
             attendances[0].userId = userId;
         }else if(date){
+            console.log("date: ", date);
+
             let index = -1;
             attendances = [];
             for(let studentId of joinedStudent){
@@ -525,22 +517,65 @@ exports.takeAttendancePostController = async (req, res, next) => {
             attendances,
             owner : true
         });
+    } catch (error) {
+        next(error)
     }
-    if (req.body.action === "takeAttendance") {
-        //code here
-        console.log(req.body);
-        let today = currentDay();
-        
-        console.log("Take Attendance", today);
-        
-        req.flash("success", "Today's attendance added.");
-        return res.redirect(`/courses/take-attendance/${courseId}`);
-    }
+};
+exports.addAttendancePostController = async (req, res, next) => {
+    let attendances = [];
+    let courseId = req.params.courseId;
 
+    try {
+        let profile = await Profile.findOne({ user: req.user._id });
+        if (!profile)
+            return res.redirect("/dashboard/create-profile");
+
+        let course = await Course.findOne({ author: req.user._id, _id: courseId });
+        let { joinedStudent } = course.toJSON();
+
+        attendances = [];
+        for(let stdnt of joinedStudent){
+            let attendancesBSON = await Attendance.findOneAndUpdate(
+                {course: courseId, studentId: stdnt},
+                {$push: {"value": 
+                        {
+                            day: currentDay(),
+                            entryTime: "0",
+                            isPresent: false
+                        }
+                    }
+                },
+                {new: true}
+            );
+
+            attendancesBSON = attendancesBSON.toJSON();
+            tmp = await User.findOne({_id: attendancesBSON.studentId});
+            attendancesBSON.userId = tmp.userId;
+
+            attendances.push(attendancesBSON);
+        }
+
+        return res.render("pages/dashboard/course/take-attendance.ejs", {
+            title: "Take Attendance",
+            flashMessage: {},
+            error: {},
+            value: {},
+            course,
+            add: true,
+            attendances,
+            owner : true
+        });
+/* 
+        req.flash("success", "Update successfull !");
+        return res.redirect(`/courses/take-attendance/${courseId}`); */
+    } catch (error) {
+        next(error)
+    }
 };
 
 exports.updateAttendancePostController = async (req, res, next) => {
     let updatedTable = req.body;
+    console.log("up table:", updatedTable);
 
     let profile = await Profile.findOne({ user: req.user._id });
     if (!profile)

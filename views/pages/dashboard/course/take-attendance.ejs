@@ -1,91 +1,95 @@
 <%- include('../../../partials/header.ejs') %>
-    <form action="/courses/take-attendance/<%= course._id %>" method="POST">
-        <div class="row">
-            <div class="card card-body mx-5">
-                <h4 class="text-center mt-2 mb-4">Your Attendance List</h4>
-                <div class="row">
-                    <div class="col-lg-5 d-flex">
-                        <div class="col-lg-5">
-                            <h5>
-                                <%= course.title %> - <%= course.batch %>
-                            </h5>
-                        </div>
-                        <div class="col-lg-3">
-                            <%= course.term %>
-                        </div>
-                        <div class="col-lg-4">
-                            Join Code: <%= course.joiningCode %>
-                        </div>
-                    </div>
 
-                    <div class="col-lg-7 d-flex">
-                        <div class="col-lg-3">
-                            <% if (owner) { %>
-                                <div class="">
-                                    <button 
-                                        type="submit" value="takeAttendance"
-                                        class="btn btn-primary btn-sm"
-                                        name="action"
-                                        <%=attendances.length ? "" : "disabled" %>
-                                    >
-                                        Take Attendance
-                                    </button>
-                                </div>
-                            <% } %>
+    <div class="row mb-2">
+        <div class="col-lg-5 d-flex text-white">
+            <div class="col-lg-5">
+                <h5>
+                    <%= course.title %> - <%= course.batch %>
+                </h5>
+            </div>
+            <div class="col-lg-3">
+                <%= course.term %>
+            </div>
+            <div class="col-lg-4">
+                Join Code: <%= course.joiningCode %>
+            </div>
+        </div>
+
+        <div class="col-lg-7 d-flex">
+            <div class="col-lg-3">
+                <% if (owner) { %>
+                    <form action="/courses/take-attendance/<%= course._id %>" method="POST">
+                        <button 
+                            type="submit" value="takeAttendance"
+                            class="btn btn-primary btn-sm"
+                            name="action"
+                            <%=attendances.length ? "" : "disabled" %>
+                        >
+                            Take Attendance
+                        </button>
+                    </form>
+                <% } %>
+            </div>
+            
+            <% if (attendances.length && owner) { %>
+                <div class="col-lg-9">
+                    <form action="/courses/attendances/search/<%= course._id %>" method="POST">
+                        <div class="form-group">
+                            <input
+                                type="text" name="userId" id="userId"
+                                class="text-center form"
+                                placeholder="Enter student ID"
+                            >
+                            <input
+                                type="date" name="date"
+                            >
+                            <button
+                                type="submit" value="Search"
+                                class="btn btn-primary btn-sm"
+                                name="action"
+                            >
+                                Search
+                            </button>
                         </div>
-                        
-                        <% if (attendances.length && owner) { %>
-                            <div class="col-lg-9">
-                                <div class="form-group">
-                                    <input
-                                        type="text" name="userId" id="userId"
-                                        class="text-center form"
-                                        placeholder="Enter student ID"
-                                    >
-                                    <input
-                                        type="date" name="date"
-                                    >
-                                    <button
-                                        type="submit" value="Search"
-                                        class="btn btn-primary btn-sm"
-                                        name="action"
-                                    >
-                                        Search
-                                    </button>
-    
-                                </div>
-                            </div>
-                        <% } %>
-                    </div>
+                    </form>
                 </div>
-                <div class="row">
-                    <% if (attendances.length) { %>
-                        <%- include("./attendanceTable.ejs") %>
-                        <% if (owner) { %>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="card card-body mx-3">
+            <div class="row">
+                <% if (attendances.length) { %>
+                    <%- include("./attendanceTable.ejs") %>
+                    <% if (owner) { %>
+                        <form action="/courses/attendances/update/<%= course._id %>" method="POST">
                             <button type="submit" value="update" style="width: 80px;"
-                                class="btn btn-primary btn-sm my-2" name="action" method="POST"
+                                class="btn btn-primary btn-sm my-2"
                                 onclick="GetCellValues('<%= attendances[0].course%>')">
                                 update
                             </button>
-                        <% } %>
-                    <% } else { %>
-                        <div class="container my-5 text-center">
-                            <h1>No one joined in this course !</h1>
-                        </div>
+                        </form>
+
+                        <form action="/courses/attendances/export/<%= course._id %>">
+                            <% if (owner && attendances.length) { %>
+                                <button type="submit" value="Export" style="width: 80px;"
+                                    class="btn btn-primary btn-sm my-2 ml-2"
+                                >
+                                    Export
+                                </button>
+                            <% } %>
+                        </form>
                     <% } %>
-                </div>
+                <% } else { %>
+                    <div class="container text-center">
+                        <h1>No one joined in this course !</h1>
+                    </div>
+                <% } %>
             </div>
         </div>
-    </form>
-    <form action="/courses/attendances/export/<%= course._id %>">
-        <% if (owner && attendances.length) { %>
-            <button type="submit" value="Export" style="width: 80px;"
-                class="btn btn-primary btn-sm my-2"
-            >
-                Export
-            </button>
-        <% } %>
-    </form>
+    </div>
+
     <%- include("../../../partials/footer.ejs") %>
 
     </body>

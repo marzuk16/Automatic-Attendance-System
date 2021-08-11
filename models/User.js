@@ -36,7 +36,7 @@ const schemaObj = {
     },
     sampleImage: {
         type: String,
-        default: "/uploads/default.jpg"
+        default: "NA"
     }
 };
 

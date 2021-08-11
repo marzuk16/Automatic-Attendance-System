@@ -1,0 +1,19 @@
+<div class="myContainer">
+    <div class="row d-flex justify-content-center">
+        <% if (courses.length) { %>
+            <div class="col-md-5 offset-md-4 m-4">
+                <div class="card card-body text-center">
+                    <h4>My Courses: <%= courses.length %></h4>
+                </div>    
+            </div>
+        <% } %>
+        
+        <% if (myJoinedClass.length) { %>
+            <div class="col-md-5 offset-md-4 m-4">
+                <div class="card card-body text-center">
+                    <h4>Joined classes: <%= myJoinedClass.length %></h4>
+                </div>    
+            </div>
+        <% } %>
+    </div>        
+</div>

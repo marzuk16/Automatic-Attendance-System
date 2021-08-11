@@ -229,3 +229,13 @@ exports.editProfilePostController = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.samplePictureGetController = ( req, res, next ) => {
+    
+    res.render("pages/collect-sample", {
+        title: "Take sample picture",
+        flashMessage: Flash.getMessage(req),
+        error: {}
+    });
+};
+exports.samplePicturePostController = ( req, res, next ) => {};

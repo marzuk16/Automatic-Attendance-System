@@ -63,13 +63,14 @@
                 <% if (attendances.length) { %>
                     <%- include("./attendanceTable.ejs") %>
                     <% if (owner) { %>
-                        <form action="/courses/attendances/update/<%= course._id %>" method="POST">
+                        <!-- <form action="/courses/attendances/update/<%#= course._id %>" method="POST"> -->
+                        <!-- <form> -->
                             <button type="submit" value="update" style="width: 80px;"
                                 class="btn btn-primary btn-sm my-2"
                                 onclick="GetCellValues('<%= attendances[0].course%>')">
                                 update
                             </button>
-                        </form>
+                        <!-- </form> -->
 
                         <form action="/courses/attendances/export/<%= course._id %>">
                             <% if (owner && attendances.length) { %>

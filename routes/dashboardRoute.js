@@ -10,7 +10,9 @@ const {
     createProfileGetController,
     createProfilePostController,
     editProfileGetController,
-    editProfilePostController
+    editProfilePostController,
+    samplePictureGetController,
+    samplePicturePostController
 } = require("../controllers/dashboardController");
 
 
@@ -23,8 +25,10 @@ router.post("/create-profile", isAuthenticated, profileValidator, createProfileP
 );
 
 router.get("/edit-profile", isAuthenticated, editProfileGetController);
-router.post("/edit-profile", isAuthenticated, profileValidator, editProfilePostController
-);
+router.post("/edit-profile", isAuthenticated, profileValidator, editProfilePostController);
+
+router.get("/sample-picture", isAuthenticated, samplePictureGetController);
+router.post("/sample-picture", isAuthenticated, samplePicturePostController);
 
 
 module.exports = router;

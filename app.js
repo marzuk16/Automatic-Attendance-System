@@ -50,12 +50,12 @@ mongoose.connect(mongoDBUrl, {
     useUnifiedTopology: true,
     useFindAndModify: false
 })
-    .then(() => {
-        //console.log(`Database connected`);
-        app.listen(PORT, () => {
-            console.log(`SERVER IS RUNNING ON ${PORT}`);
-        });
-    })
-    .catch(error => {
-        return console.log(error);
-    })
+.then(() => {
+    //console.log(`Database connected`);
+    app.listen(PORT, () => {
+        console.log(`SERVER IS RUNNING ON ${PORT}`);
+    });
+})
+.catch(error => {
+    return console.log(error);
+})

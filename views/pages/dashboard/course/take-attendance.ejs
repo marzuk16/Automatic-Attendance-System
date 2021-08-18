@@ -3,32 +3,36 @@
     <div class="row mb-2">
         <div class="col-lg-5 d-flex text-white">
             <div class="col-lg-5">
-                <h5>
+                <h6 class="text-white py-2 text-center" style="border-radius: 5px; background-color: #192a3d;">
                     <%= course.title %> - <%= course.batch %>
-                </h5>
+                </h6>
             </div>
             <div class="col-lg-3">
-                <%= course.term %>
+                <h6 class="text-white py-2 text-center" style="border-radius: 5px; background-color: #192a3d;">
+                    <%= course.term %>
+                </h6>
             </div>
             <div class="col-lg-4">
-                Join Code: <%= course.joiningCode %>
+                <h6 class="text-white py-2 text-center" style="border-radius: 5px; background-color: #192a3d;">
+                    Join Code: <%= course.joiningCode %>
+                </h6>
             </div>
         </div>
 
         <div class="col-lg-7 d-flex">
             <div class="col-lg-3">
-                <% if (owner) { %>
-                    <form action="/courses/take-attendance/<%= course._id %>" method="POST">
+                <!-- <#% if (owner) { %>
+                    <form action="/courses/take-attendance/<#%= course._id %>" method="POST">
                         <button 
                             type="submit" value="takeAttendance"
                             class="btn btn-primary btn-sm"
                             name="action"
-                            <%=attendances.length ? "" : "disabled" %>
+                            <#%=attendances.length ? "" : "disabled" %>
                         >
                             Take Attendance
                         </button>
                     </form>
-                <% } %>
+                <#% } %> -->
             </div>
             
             <% if (attendances.length && owner) { %>
@@ -63,13 +67,14 @@
                 <% if (attendances.length) { %>
                     <%- include("./attendanceTable.ejs") %>
                     <% if (owner) { %>
-                        <form action="/courses/attendances/update/<%= course._id %>" method="POST">
+                        <!-- <form action="/courses/attendances/update/<%#= course._id %>" method="POST"> -->
+                        <!-- <form> -->
                             <button type="submit" value="update" style="width: 80px;"
                                 class="btn btn-primary btn-sm my-2"
                                 onclick="GetCellValues('<%= attendances[0].course%>')">
                                 update
                             </button>
-                        </form>
+                        <!-- </form> -->
 
                         <form action="/courses/attendances/export/<%= course._id %>">
                             <% if (owner && attendances.length) { %>

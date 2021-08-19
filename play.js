@@ -1,6 +1,6 @@
-let present = absent = 0;
+let x = ["a", "b", "c"];
+let y = ["d", "e", "f"];
 
-present ++;
-absent ++;
+let z = [...x, ...y];
 
-console.log(present, " ", absent);
+console.log(z);

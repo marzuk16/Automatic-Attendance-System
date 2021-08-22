@@ -7,7 +7,7 @@ const {
     getConversationById
 } = require("../controllers/inboxController");
 
-router.get("/", isAuthenticated, getInbox);
-router.get("/conversations/:conversationId", getConversationById);
+router.get("/", isAuthenticated,  getInbox);
+router.get("/conversations/:conversationId", isAuthenticated, getConversationById);
 
 module.exports = router;

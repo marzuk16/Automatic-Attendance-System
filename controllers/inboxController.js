@@ -4,6 +4,8 @@ const Flash = require("../utils/Flash");
 
 exports.getInbox = async (req, res, next) => {
 
+    // console.log(`Client logger-> ip: ${req.ip} Host: ${req.host} Method: ${req.method}`);
+
     let profile = await Profile.findOne({ user: req.user._id });
     if (!profile)
         return res.redirect("/dashboard/create-profile");

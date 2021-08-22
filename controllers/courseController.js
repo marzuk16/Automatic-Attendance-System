@@ -302,6 +302,15 @@ exports.myAttendanceGetController = async (req, res, next) => {
         tmp1 = tmp1?.toJSON();
         tmp1.userId = req.user.userId;
 
+        let present = 0, absent = 0;
+            for(val of tmp1.value){
+
+                // console.log("ispreent: ", val.isPresent);
+                val.isPresent ? present++ : absent++ ;
+            }
+
+            tmp1.value.push({present, absent});
+
         attendances.push(tmp1);
         
         res.render("pages/dashboard/course/take-attendance.ejs", {

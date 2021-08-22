@@ -1,13 +1,18 @@
-<div class="container">
-    <div class="row m-3 border-bottom border-danger" style="border-radius: 10px;">
-        <div class="col-md-12 text-center">
-            <h3 class="text-white">Coureses</h3>
-        </div>
-    </div>
-    <div class="row m-3">
+<div>
+    <div class="row">
         <div class="col-md-12">
-            <h6 class="text-white m-2 py-2 pl-4" style="border-radius: 5px; background-color: #192a3d;">Algorithms</h6>
-            <h6 class="text-white m-2 py-2 pl-4" style="border-radius: 5px; background-color: #192a3d;">Data Structure</h6>
+            <% if (value.length) { %>
+                <% for( let conversation of value) { %>
+                    <h6 class="my-2">
+                        <a class ="text-white" href="/inbox/conversations/<%= conversation._id %>">
+                            <%= conversation.title %>
+                        </a> 
+                    </h6>
+                <% } %>
+            <% }else{%>
+                    <h4 class="text-danger">You don't have any conversations.</h4>
+            <% } %> 
+            
         </div>
     </div>
 </div>

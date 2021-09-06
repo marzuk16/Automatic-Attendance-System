@@ -257,8 +257,6 @@ exports.resetPasswordPostController = (req, res, next) => {
             return res.redirect('/auth/login');
         });
 
-
-
     } catch (error) {
         next(error);
     }

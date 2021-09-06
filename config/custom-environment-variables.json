@@ -1,4 +1,5 @@
 {
+    "db-name": "dbName",
     "db-username": "dbUser",
     "db-password": "dbUserPass",
     "sgMail": "sgMailAPIKey",

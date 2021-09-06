@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
+const config = require("config");
 const Flash = require("../utils/Flash");
 
 const User = require("../models/User");
@@ -8,7 +9,7 @@ const errorFormatter = require("../utils/validationErrorFormatter");
 
 
 const sgMail = require('@sendgrid/mail');
-const apiKey = "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";
+const apiKey = config.get("sgMail");
 sgMail.setApiKey(apiKey);
 
 exports.signupGetController = (req, res, next) => {

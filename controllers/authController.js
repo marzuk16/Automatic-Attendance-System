@@ -244,11 +244,12 @@ exports.resetPasswordPostController = (req, res, next) => {
             const msg = {
                 to: user.email, // Change to your recipient
                 from: 'marzuk777@gmail.com', // Change to your verified sender
-                subject: 'Reset Password',
+                subject: 'Reset Password - Automatic Attendance System',
                 text: 'Click Here',
                 html: `
                     <p>You requested for password reset</p>
                     <h4><a href="http://localhost:3000/auth/reset-password/${token}" >Click Here</a> to reset password</h4>
+                    <p>If you are not request, ignore it.</>
                 `,
             }
             sgMail.send(msg);

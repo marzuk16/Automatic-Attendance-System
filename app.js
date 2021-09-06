@@ -13,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const dbUser = config.get("db-username");
 const dbUserPass = config.get("db-password");
-const dbName = "attendanceSystem";
+const dbName = config.get("db-name");
 const mongoDBUrl = `mongodb+srv://${dbUser}:${dbUserPass}@cluster0.arzvi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 // const mongoDBUrl = `mongodb://localhost/${dbName}`;
 
@@ -50,12 +50,12 @@ mongoose.connect(mongoDBUrl, {
     useUnifiedTopology: true,
     useFindAndModify: false
 })
-    .then(() => {
-        //console.log(`Database connected`);
-        app.listen(PORT, () => {
-            console.log(`SERVER IS RUNNING ON ${PORT}`);
-        });
-    })
-    .catch(error => {
-        return console.log(error);
-    })
+.then(() => {
+    //console.log(`Database connected`);
+    app.listen(PORT, () => {
+        console.log(`SERVER IS RUNNING ON ${PORT}`);
+    });
+})
+.catch(error => {
+    return console.log(error);
+})

@@ -2,6 +2,7 @@ const authRoute = require("./authRoute");
 const dashboardRoute = require("./dashboardRoute");
 const uploadRoute = require("./uploadRoutes");
 const courseRoute = require("./courseRoute");
+const inboxRoute = require("./inboxRoute");
 const indexRoute = require("./indexRoute");
 const instituteRoute = require("./instituteRoute");
 const contactUs = require("./contactUsRoutes");
@@ -26,6 +27,10 @@ const routes = [
     {
         path: "/home",
         handler: indexRoute
+    },
+    {
+        path: "/inbox",
+        handler: inboxRoute
     },
     {
         path: "/institute",

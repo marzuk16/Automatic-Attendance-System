@@ -1,0 +1,42 @@
+<%- include("../../partials/header.ejs") %>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="row" style="background-color: #192a3d; height: 500px; border-radius: 10px;">
+            <div class="col-md-3" style="background-color: #091018; border-radius: 7px 0 0 7px;">
+                <div class="row p-2">
+                    <input
+                        class="text-center"
+                        type="text" placeholder="search"
+                        style="
+                            background-color: #0f1316; color: #eee; outline: none;
+                            border: 0px; border-radius: 2px; height: 30px;
+                            "
+                    >
+                </div>
+                <div class="row">
+                    <%- include("./conversationList.ejs") %> 
+                </div>
+            </div>
+            <div class="col-md-8">
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+<!--     <div class="row mx-5" style=" background-color: #192a3d; height: 500px; border-radius: 5px;">
+        <div class="col-md-2">
+            <%#- include("./conversationList.ejs") %> 
+        </div>
+        <div class="col-md-8">
+            <%#- include("./conversations.ejs") %> 
+        </div>
+    </div> -->
+
+    <%- include("../../partials/footer.ejs") %>
+
+    </body>
+
+</html>

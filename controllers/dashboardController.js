@@ -10,6 +10,7 @@ const errorFomatter = require("../utils/validationErrorFormatter");
 
 exports.dashboardGetController = async (req, res, next) => {
 
+    console.log("userrrrr: ", req.user, "----> ", req.session);
     try {
         let profile = await Profile.findOne({ user: req.user._id });
 
@@ -229,3 +230,13 @@ exports.editProfilePostController = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.samplePictureGetController = ( req, res, next ) => {
+    
+    res.render("pages/collect-sample", {
+        title: "Take sample picture",
+        flashMessage: Flash.getMessage(req),
+        error: {}
+    });
+};
+exports.samplePicturePostController = ( req, res, next ) => {};

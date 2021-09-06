@@ -1,0 +1,18 @@
+<div>
+    <div class="row">
+        <div class="col-md-12">
+            <% if (value.length) { %>
+                <% for( let conversation of value) { %>
+                    <h6 class="my-2">
+                        <a class ="text-white" href="/inbox/conversations/<%= conversation._id %>">
+                            <%= conversation.title %>
+                        </a> 
+                    </h6>
+                <% } %>
+            <% }else{%>
+                    <h4 class="text-danger">You don't have any conversations.</h4>
+            <% } %> 
+            
+        </div>
+    </div>
+</div>

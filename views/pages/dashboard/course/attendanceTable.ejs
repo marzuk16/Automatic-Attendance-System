@@ -25,13 +25,17 @@
         </thead>
         <tbody>
             <% for( let attend of attendances) { %>
+                <%#= attend.value[0].isPresent %> 
                 <tr>
                     <th scope="row">
-                        <a href="/dashboard/profile/<%= attend.userId%>" >
+                        <a href="/dashboard/profile/<%= attend.userId%>"
+                            title= "Present: <%= attend.value[attend.value.length-1].present %>,
+                            Absent: <%= attend.value[attend.value.length-1].absent %>" 
+                        >
                             <%= attend.userId ? attend.userId : "" %>
                         </a>
                     </th>
-                    <% for (let val of attend.value) { %>
+                    <% for (let i = 0; i < attend.value.length-1; i++) { %>
                         <td>
                             <!-- for checkbox -->
                             <div class="form-check">
@@ -39,8 +43,7 @@
                                     class="attedanceCheck form-check-input" type="checkbox"
                                     value="" id="flexCheckDefault"
                                     onclick = getValue(this)
-                                    <%=val.isPresent ? "checked" : "" %>
-                                    <%#=owner ? "" : "disabled" %>
+                                    <%= attend.value[i].isPresent ? "checked" : "" %>
                                 >
                             </div>
                         </td>
@@ -92,22 +95,30 @@ function getValue(inputTag) {
     }
 }
 
-function GetCellValues(courseId) {
+async function GetCellValues(courseId) {
     console.log("values", value);
 
     let url = `http://localhost:3000/courses/attendances/update/${courseId}`;
-    $.ajax({
-        type: "POST",
-        url,
-        data: JSON.stringify(value),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        error: function() {
-            console.log("ajax call got error");
+
+    await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
         },
-        success: function() {
-            console.log("ajax call success");
-        }
+        body: JSON.stringify(value),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            setTimeout(() => {
+                location.reload();
+            }, 100);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            setTimeout(() => {
+                location.reload();
+            }, 100);
     });
 }
 </script>

@@ -13,7 +13,7 @@ const setLocals = require("./setLocals");
 //variables for db configure
 const dbUser = config.get("db-username");
 const dbUserPass = config.get("db-password");
-const dbName = "attendanceSystem";
+const dbName = config.get("db-name");
 const mongoDBUrl = `mongodb+srv://${dbUser}:${dbUserPass}@cluster0.arzvi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
 //session store to mondodb

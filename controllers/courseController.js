@@ -302,8 +302,17 @@ exports.myAttendanceGetController = async (req, res, next) => {
         tmp1 = tmp1?.toJSON();
         tmp1.userId = req.user.userId;
 
-        attendances.push(tmp1);
+        let present = 0, absent = 0;
+            for(val of tmp1.value){
 
+                // console.log("ispreent: ", val.isPresent);
+                val.isPresent ? present++ : absent++ ;
+            }
+
+            tmp1.value.push({present, absent});
+
+        attendances.push(tmp1);
+        
         res.render("pages/dashboard/course/take-attendance.ejs", {
             title: "Take Attendance",
             flashMessage: Flash.getMessage(req),
@@ -339,6 +348,7 @@ exports.takeAttendanceGetController = async (req, res, next) => {
         }
 
         let attendances = [];
+
         let tmp, tmp1;
         let { joinedStudent } = course;
         let add = false;
@@ -351,7 +361,17 @@ exports.takeAttendanceGetController = async (req, res, next) => {
             tmp1 = tmp1?.toJSON();
             tmp1.userId = tmp.userId;
 
+            let present = 0, absent = 0;
+            for(val of tmp1.value){
+
+                // console.log("ispreent: ", val.isPresent);
+                val.isPresent ? present++ : absent++ ;
+            }
+
+            tmp1.value.push({present, absent});
+
             attendances.push(tmp1);
+            // console.log("tmp1: ", tmp1);
 
             if(!add){
                 for(let val of tmp1.value){
@@ -575,7 +595,8 @@ exports.addAttendancePostController = async (req, res, next) => {
 
 exports.updateAttendancePostController = async (req, res, next) => {
     let updatedTable = req.body;
-    console.log("up table:", updatedTable);
+    if(updatedTable)
+        console.log("up table:", updatedTable);
 
     let profile = await Profile.findOne({ user: req.user._id });
     if (!profile)
@@ -650,13 +671,22 @@ exports.joinClassPostController = async (req, res, next) => {
         }
         let courseId = course._id;
         if(course){
+
+            if(course.author.toString() === req.user._id.toString()){
+
+                req.flash("fail", "You can't join your own course.");
+                return res.redirect("/dashboard");
+            }
+
             for(let stdnt of course.joinedStudent){
                 if(req.user._id.toString() === stdnt.toString()){
+
+                    req.flash("fail", "Already joined.");
                     return res.redirect("/dashboard");
                 }
             }
         }
-        
+
         course = await Course.findOneAndUpdate(
             { joiningCode },
             { $push: { "joinedStudent": req.user._id } },

@@ -1,0 +1,4 @@
+Conversation
+    courses
+
+All perticipant are recipient.

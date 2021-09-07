@@ -1,18 +1,45 @@
 <div>
     
     <!-- <div class="row"> -->
-        <div class="row pt-2">
+        <div class="row py-1 mb-2"
+            style="
+                background-color: #091018; color: #eee;
+                height: 40px; border-left: 1px solid #192a3d;
+            "
+        >
             <div class="col-md-12 text-center">
-                <h4 class="text-white">Conversation Name</h4>
+                <h4 class="text-white"><%= conversationName.length?conversationName:"" %></h4>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12" style="border-right: 2px solid #192a3d;">
+            <div class="col-md-12" style="border-right: 2px solid #192a3d; min-height: 402px;">
                 
-                <% for( let index = 0; index < 10; index++ ) { %>
-                    <span class="bg-dark text-white p-1">Test</span><br>
+                <% if (conversationName.length) { %>
+                    <% if (conversations.length) { %>
+                        <% for( let item of conversations ) { %>
+                            <span class="bg-dark text-white p-1"><%= item.body %></span><br>
+                        <% } %>
+                    <% } else{ %>
+                        <h4 class="text-danger">Empty!</h4>
+                    <%}%>
+                    
                 <% } %>
             </div>
+        </div>
+        <div class="row"
+        style="
+                background-color: #091018; color: #eee;
+                height: 50px; border-left: 1px solid #192a3d;
+            "
+        >
+            <textarea
+                class="pl-2"
+                type="text" placeholder="Write a message..."
+                style="
+                    background-color: #0f1316; color: #eee; outline: none;
+                    border: 0px; width: 100%;
+                    "
+            ></textarea>
         </div>
     <!-- </div> -->
 </div>

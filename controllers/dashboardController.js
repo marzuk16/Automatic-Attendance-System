@@ -10,7 +10,7 @@ const errorFomatter = require("../utils/validationErrorFormatter");
 
 exports.dashboardGetController = async (req, res, next) => {
 
-    console.log("userrrrr: ", req.user, "----> ", req.session);
+    // console.log("userrrrr: ", req.user, "----> ", req.session);
     try {
         let profile = await Profile.findOne({ user: req.user._id });
 

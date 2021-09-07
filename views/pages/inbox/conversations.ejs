@@ -27,19 +27,30 @@
             </div>
         </div>
         <div class="row"
-        style="
+            style="
                 background-color: #091018; color: #eee;
                 height: 50px; border-left: 1px solid #192a3d;
             "
         >
-            <textarea
-                class="pl-2"
-                type="text" placeholder="Write a message..."
-                style="
-                    background-color: #0f1316; color: #eee; outline: none;
-                    border: 0px; width: 100%;
-                    "
-            ></textarea>
+            
+            <div class="col-md-11">
+                <textarea
+                    type="text" placeholder="Write a message..."
+                    style="
+                        background-color: #091018; color: #eee; outline: none;
+                        border: 0px; width: 100%;
+                        "
+                ></textarea>
+            </div>
+            <div class="col-md-1 pt-3">
+                <a 
+                    class = "text-white text-center" title="Edit"
+                    href="/courses/edit-course/<#%= course._id %>"
+                >
+                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                </a>
+            </div>
         </div>
+
     <!-- </div> -->
 </div>

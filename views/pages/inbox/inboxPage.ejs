@@ -20,7 +20,13 @@
                 </div>
             </div>
             <div class="col-md-9">
-                <%- include("./conversations.ejs") %>
+                <% if (firstTimeGet) { %>
+                    <div class="row">
+                        <h4 class="text-info">Select a conversation!</h4>
+                    </div>
+                <% } else{ %>
+                    <%- include("./conversations.ejs") %>
+                <% } %>
             </div>
         </div>
     </div>

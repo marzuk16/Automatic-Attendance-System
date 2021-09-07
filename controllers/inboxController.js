@@ -29,7 +29,8 @@ exports.getInbox = async (req, res, next) => {
                 flashMessage: {},
                 value: conversationList,
                 conversations: {},
-                conversationName: {}
+                conversationName: {},
+                firstTimeGet: 1
             });
         
     } catch (error) {
@@ -80,7 +81,8 @@ exports.getConversationById = async (req, res, next) => {
             flashMessage: {},
             conversations: allConversations,
             value: conversationList,
-            conversationName
+            conversationName,
+            firstTimeGet: 0
         });
         
     } catch (error) {

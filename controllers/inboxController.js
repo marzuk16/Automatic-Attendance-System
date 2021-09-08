@@ -20,15 +20,12 @@ exports.inboxGetController = async (req, res, next) => {
             let conversationList = [...courses?.course, ...courses?.joinedClass];
 
             // console.log("conversationList: ", conversationList);
+            res.locals.conversationList = conversationList;
                 
-            res.render("pages/inbox/inboxPage", {
+            res.render("pages/inbox/inbox", {
                 title: "Inbox",
                 error: {},
-                flashMessage: {},
-                value: conversationList,
-                conversations: {},
-                conversationName: {},
-                firstTimeGet: 1
+                flashMessage: {}
             });
         
     } catch (error) {

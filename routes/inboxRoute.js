@@ -3,11 +3,14 @@ const router = require("express").Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
 
 const {
-    getInbox,
-    getConversationById
+    inboxGetController,
+    conversationByIdGetController,
+    sendMessagePostController
 } = require("../controllers/inboxController");
 
-router.get("/", isAuthenticated,  getInbox);
-router.get("/conversations/:conversationId", isAuthenticated, getConversationById);
+router.get("/", isAuthenticated,  inboxGetController);
+router.get("/conversations/:conversationId", isAuthenticated, conversationByIdGetController);
+
+router.post("/send-message", isAuthenticated, sendMessagePostController);
 
 module.exports = router;

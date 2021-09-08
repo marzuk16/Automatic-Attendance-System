@@ -9,11 +9,15 @@ const schemaObj = {
         required: true
     },
     sender: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+        id: Schema.Types.ObjectId,
+        name: String,
+        profilePics: String
     },
-    body: String,
+    message: String,
+    date_time: {
+        type: Date,
+        default: Date.now,
+      },
     status: {
         type: Boolean,
         default: true

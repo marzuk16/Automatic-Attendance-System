@@ -16,17 +16,6 @@
               <div class="title-text"><%= conversation.title %>-<%= conversation.batch %></div>
               <div class="conversation-date"><%#= moment(conversation.last_updated).fromNow() %></div>
             </div>
-          <%# } else { %>
-            <!-- <div class="conversation" onclick="getMessages('<%#= conversation._id %>', '<%#= conversation.creator.name %>')">
-              <%# if (conversation.creator.avatar) { %>
-              <img src="./uploads/avatars/<%#= conversation.creator.avatar %>" alt="<%#= conversation.creator.name %>" />
-              <%# } else { %>
-                <img src="./images/nophoto.png" />
-              <%# } %>
-              <div class="title-text"><%#= conversation.creator.name %></div>
-              <div class="conversation-date"><%#= moment(conversation.last_updated).fromNow() %></div>
-            </div>
-          <%# } %> -->
         <% }); %>
         
         <!-- show no conversation placeholder image for 0 conversations -->

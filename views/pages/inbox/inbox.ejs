@@ -62,16 +62,21 @@
       const form = document.querySelector('#chat-form');
       const messageContainer = document.querySelector('#chat-message-list');
       const chatTitleContainer = document.querySelector('#conversation-partner');
-      const loggedinUserId = '<%= user.userId %>';
+      const loggedinUserId = '<%= user._id %>';
       // const loggedinUserName = '<%#= loggedInUser.username %>';
       let participant = null; // selected conversation participant object
       let current_conversation_id; // selected conversation id
+      
       // socket initialization
       const socket = io('<%= process.env.APP_URL %>');
+
       // handle new/live incoming message from socket
       socket.on("new_message", data => {
+
+        console.log("inside socket");
+
         // only respond if current conversation is open in any client
-        if(data.message.conversation_id == current_conversation_id) {
+        // if(data.message.course == current_conversation_id) {
           // message class
           const messageClass = data.message.sender.id === loggedinUserId ? 'you-message' : 'other-message';
           
@@ -94,8 +99,11 @@
           }
           // append the inoming message to message area as last item
           document.querySelector('#chat-message-list > .message-row:first-child').insertAdjacentHTML('beforeBegin', messageHTML);
-        }
+        /* }else{
+          console.log("outside socket");
+        } */
       });
+
       // get messages of a conversation
       async function getMessages(conversation_id, current_conversation_name){
         // messages failure toast
@@ -116,6 +124,7 @@
               let allMessages = '';
               if(data.messages.length > 0) {
                 data.messages.forEach((message) => {
+                  // console.log("message: ", message.sender.profilePics);
                   let senderAvatar = `./uploads/${message.sender.profilePics}`;
                   const messageClass = message.sender.id === loggedinUserId ? 'you-message' : 'other-message';
                   const showAvatar = message.sender.id === loggedinUserId ? '' : `<img src="${senderAvatar}" alt="${message.sender.name}" />`;
@@ -131,7 +140,7 @@
                   messageContainer.innerHTML = allMessages;
                 });
               } else if(data.messages.length === 0) {
-                messageContainer.innerHTML = '<div class="nothing">EMPTY!</div>';
+                messageContainer.innerHTML = '<div class="nothing"><img src="./images/Empty-Trash-icon.png" /></div>';
               }
               chatTitleContainer.textContent = current_conversation_name;
             }

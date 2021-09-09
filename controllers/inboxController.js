@@ -161,9 +161,7 @@ exports.getMessages = async (req, res, next) => {
   }
 
 // send new message
-exports.sendMessagePostController = async (req, res, next) => {
-    
-  console.log("body.body: ", req.body.message);
+exports.sendMessagePostController = async (req, res, next) => {   
 
     if (req.body.message){
 
@@ -180,9 +178,7 @@ exports.sendMessagePostController = async (req, res, next) => {
           course: req.body.conversationId,
         });
         
-        console.log("newMessage: ", newMessage);
         const result = await newMessage.save();
-        console.log("created message: ", result);
 
         // emit socket event
         global.io.emit("new_message", {

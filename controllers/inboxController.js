@@ -33,7 +33,7 @@ exports.inboxGetController = async (req, res, next) => {
     }
 };
 
-exports.conversationByIdGetController = async (req, res, next) => {
+/* exports.conversationByIdGetController = async (req, res, next) => {
 
     let conversationId = req.params.conversationId;
 
@@ -83,7 +83,7 @@ exports.conversationByIdGetController = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-};
+}; */
 
 // search conversation
 exports.searchConversation = async (req, res, next) => {
@@ -131,21 +131,22 @@ exports.searchConversation = async (req, res, next) => {
 
 // get messages of a conversation
 exports.getMessages = async (req, res, next) => {
+
     try {
-      const messages = await Message.find({
-        conversation_id: req.params.conversation_id,
+      const messages = await Conversation.find({
+        course: req.params.conversation_id,
       }).sort("-createdAt");
   
-      const { participant } = await Conversation.findById(
+      const { author, joinedStudent } = await Course.findById(
         req.params.conversation_id
       );
   
       res.status(200).json({
         data: {
-          messages: messages,
-          participant,
+          messages,
+          participant: [author, ...joinedStudent],
         },
-        user: req.user.userid,
+        user: req.user.userId,
         conversation_id: req.params.conversation_id,
       });
     } catch (err) {
@@ -162,12 +163,14 @@ exports.getMessages = async (req, res, next) => {
 // send new message
 exports.sendMessagePostController = async (req, res, next) => {
     
+  console.log("body.body: ", req.body.message);
+
     if (req.body.message){
 
       try {
 
         // save message text in database
-        const newMessage = new Message({
+        const newMessage = new Conversation({
           message: req.body.message,
           sender: {
             id: req.user._id,
@@ -176,9 +179,11 @@ exports.sendMessagePostController = async (req, res, next) => {
           },
           course: req.body.conversationId,
         });
-  
+        
+        console.log("newMessage: ", newMessage);
         const result = await newMessage.save();
-  
+        console.log("created message: ", result);
+
         // emit socket event
         global.io.emit("new_message", {
           message: {
@@ -209,9 +214,48 @@ exports.sendMessagePostController = async (req, res, next) => {
     } else {
       res.status(500).json({
         errors: {
-          common: "message text or attachment is required!",
+          common: "message text is required!",
         },
       });
     }
   }
   
+// search user
+exports.searchConversation = async (req, res, next) => {
+
+  const conversationSearch = req.body.conversation;
+  // console.log("search string: ", conversationSearch);
+  try {
+    if (conversationSearch !== "") {
+
+      const conversationList = await Course.find(
+        {
+          $or: [
+            {
+              title: conversationSearch,
+            },
+            {
+              batch: conversationSearch,
+            },
+            {
+              term: conversationSearch,
+            },
+          ],
+        }
+      );
+
+      res.json(conversationList);
+
+    } else {
+      throw createError("You must provide some text to search!");
+    }
+  } catch (err) {
+    res.status(500).json({
+      errors: {
+        common: {
+          msg: err.message,
+        },
+      },
+    });
+  }
+}

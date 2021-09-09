@@ -74,15 +74,18 @@
       socket.on("new_message", data => {
 
         console.log("inside socket");
+        console.log("data.message.course: ", data.message.course);
+        console.log("current_conversation_id: ", current_conversation_id);
 
         // only respond if current conversation is open in any client
         // if(data.message.course == current_conversation_id) {
           // message class
           const messageClass = data.message.sender.id === loggedinUserId ? 'you-message' : 'other-message';
           
-          const senderAvatar = `<img src="./uploads/${data.message.sender.profilePics}" alt="${data.message.sender.name}" />`;
+          const senderAvatar = `<img src="${data.message.sender.profilePics}" alt="${data.message.sender.name}" />`;
           
           let messageHTML;
+
           // do not show avatar for loggedin user
           if(data.message.sender.id == loggedinUserId) {
             messageHTML = `<div class="message-row ${messageClass}"><div class="message-content">
@@ -125,7 +128,7 @@
               if(data.messages.length > 0) {
                 data.messages.forEach((message) => {
                   // console.log("message: ", message.sender.profilePics);
-                  let senderAvatar = `./uploads/${message.sender.profilePics}`;
+                  let senderAvatar = `${message.sender.profilePics}`;
                   const messageClass = message.sender.id === loggedinUserId ? 'you-message' : 'other-message';
                   const showAvatar = message.sender.id === loggedinUserId ? '' : `<img src="${senderAvatar}" alt="${message.sender.name}" />`;
                   
@@ -133,7 +136,6 @@
                   let messageHTML = `<div class="message-row ${messageClass}"><div class="message-content">
                       ${showAvatar}
                       <div class="message-text">${message.message}</div>
-                      
                       <div class="message-time">${moment(message.date_time).fromNow()}</div>
                     </div></div>`;
                   allMessages += messageHTML;

@@ -69,6 +69,7 @@ exports.createCoursePostController = async (req, res, next) => {
         term,
         joiningCode,
         author: req.user._id,
+        lastMessageUpdate: Date.now()
     });
 
     try {

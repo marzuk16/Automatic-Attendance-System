@@ -3,6 +3,7 @@
       <div id="search-container">
         <input type="text" placeholder="Search" />
       </div>
+      <%- include('../../partials/search-conversation-modal.ejs'); %>
       <div id="conversation-list">
         <% conversationList.forEach(function(conversation) { %>
             
@@ -56,12 +57,20 @@
       // socket initialization
       const socket = io('<%= process.env.APP_URL %>');
 
+      //handle live update conversations
+      // socket.on("update_conversation", conversation => {
+
+      //   <div class="conversation" onclick="getMessages('<%#= conversation._id %>', '<%#= conversation.title %>-<%#= conversation.batch %>')">
+              
+      //         <img src="./images/male-user.png" alt="<%#= conversation.title %>" />
+              
+      //         <div class="title-text"><%#= conversation.title %>-<%#= conversation.batch %></div>
+      //         <div class="conversation-date"><%#= moment(conversation.lastMessageUpdate).fromNow() %></div>
+      //     </div>
+          
+      // });
       // handle new/live incoming message from socket
       socket.on("new_message", data => {
-
-        console.log("inside socket");
-        console.log("data.message.course: ", data.message.course);
-        console.log("current_conversation_id: ", current_conversation_id);
 
         // only respond if current conversation is open in any client
         // if(data.message.course == current_conversation_id) {

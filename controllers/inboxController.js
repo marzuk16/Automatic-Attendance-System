@@ -30,7 +30,7 @@ exports.inboxGetController = async (req, res, next) => {
             console.log("conversationList: ", res.locals.conversationList);
 
             // emit socket event
-            global.io.emit("new_message");
+            global.io.emit("update_conversation", res.locals.conversationList);
                 
             res.render("pages/inbox/inbox", {
                 title: "Inbox",

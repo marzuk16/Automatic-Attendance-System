@@ -10,6 +10,49 @@
             </div>
             <div class="row">
                 <div class="col-md-5 offset-md-1">
+                    <h4 class="text-center mb-3 ">
+                        Students list ( <%= studentsList.length %> )
+                    </h4>
+                    
+                    <div style="overflow-x: hidden; overflow-y: scroll; height:400px;">
+                    
+                        <% studentsList.forEach(student => { %>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <a
+                                        class="text-white" 
+                                        href="/dashboard/profile/<%= student.userId%>"
+                                    >
+                                        <%= student.name ? student.name : "" %>
+                                    </a>
+                                </div>
+                                <div class="col-md-5">
+                                    <a
+                                        class="text-white" 
+                                        href="/dashboard/profile/<%= student.userId%>"
+                                    >
+                                        <%= student.userId ? student.userId : "" %>
+                                    </a>
+                                </div>
+                                <div class="col-md-2">
+                                    <form 
+                                        action="/courses/edit-course/remove-student/<%=value._id%>/student/<%=student._id%> " method="POST"
+                                    >
+                                        
+                                        <button
+                                            type="submit" class="btn"
+                                            title="Remove"
+                                        >
+                                            <i class="fas fa-user-times" style="color: red"></i>
+                                        </button>
+                                    
+                                    </form>
+                                </div>  
+                            </div>        
+                        <% }) %> 
+                    </div>
+                </div>
+                <div class="col-md-5 offset-md-1">
                     <h4 class="text-center text-white mb-3 ">Update Course</h4>
                     <div class="card card-body">
                         <form action="/courses/edit-course/<%= value._id %>" method="POST">
@@ -73,49 +116,6 @@
                                 >
                             </div>
                         </form>
-                    </div>
-                </div>
-                <div class="col-md-5 offset-md-1">
-                    <h4 class="text-center mb-3 ">
-                        Students list ( <%= studentsList.length %> )
-                    </h4>
-                    
-                    <div style="overflow-x: hidden; overflow-y: scroll; height:400px;">
-                    
-                        <% studentsList.forEach(student => { %>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <a
-                                        class="text-white" 
-                                        href="/dashboard/profile/<%= student.userId%>"
-                                    >
-                                        <%= student.name ? student.name : "" %>
-                                    </a>
-                                </div>
-                                <div class="col-md-5">
-                                    <a
-                                        class="text-white" 
-                                        href="/dashboard/profile/<%= student.userId%>"
-                                    >
-                                        <%= student.userId ? student.userId : "" %>
-                                    </a>
-                                </div>
-                                <div class="col-md-2">
-                                    <form 
-                                        action="/courses/edit-course/remove-student/<%=value._id%>/student/<%=student._id%> " method="POST"
-                                    >
-                                        
-                                        <button
-                                            type="submit" class="btn"
-                                            title="Remove"
-                                        >
-                                            <i class="fas fa-user-times" style="color: red"></i>
-                                        </button>
-                                    
-                                    </form>
-                                </div>  
-                            </div>        
-                        <% }) %> 
                     </div>
                 </div>
             </div>

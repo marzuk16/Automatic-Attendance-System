@@ -57,6 +57,7 @@
     });
     // send request for search
     async function searchConversations() {
+
       let response = await fetch("/inbox/search", {
         method: "POST",
         body: JSON.stringify({
@@ -66,8 +67,10 @@
           "Content-type": "application/json; charset=UTF-8",
         },
       });
+
       // get response
       let result = await response.json();
+      
       // handle error and response
       if (result.errors) {
         const errorplaceholder = document.querySelector("p.error");

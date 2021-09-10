@@ -2,6 +2,12 @@ const Profile = require("../models/Profile");
 const Course = require("../models/Course");
 const Conversation = require("../models/Conversation");
 
+
+const opOverLoad = (a, b) => {
+
+  return a.lastMessageUpdate < b.lastMessageUpdate ? 1 : -1;
+};
+
 exports.inboxGetController = async (req, res, next) => {
 
     // console.log(`Client logger-> ip: ${req.ip} Host: ${req.host} Method: ${req.method}`);
@@ -19,8 +25,12 @@ exports.inboxGetController = async (req, res, next) => {
             // own created courses and joined courses
             let conversationList = [...courses?.course, ...courses?.joinedClass];
 
-            // console.log("conversationList: ", conversationList);
-            res.locals.conversationList = conversationList;
+            res.locals.conversationList = conversationList.sort(opOverLoad);
+
+            console.log("conversationList: ", res.locals.conversationList);
+
+            // emit socket event
+            global.io.emit("new_message");
                 
             res.render("pages/inbox/inbox", {
                 title: "Inbox",
@@ -32,102 +42,6 @@ exports.inboxGetController = async (req, res, next) => {
         next(error)
     }
 };
-
-/* exports.conversationByIdGetController = async (req, res, next) => {
-
-    let conversationId = req.params.conversationId;
-
-    console.log("conversationId: ", conversationId);
-
-    try {
-        let profile = await Profile.findOne({ user: req.user._id });
-        if (!profile)
-            return res.redirect("/dashboard/create-profile");
-
-        // let course = await Course.findById({$and: [{_id: conversationId }, {$or: [{author: req.user._id}, {joinedStudent: req.user._id}]}]});
-        let course = await Course.findById({_id: conversationId });
-        
-        console.log("course: ", course);
-
-        let allConversations = [];
-        if(req.user._id != course.author || course.joinedStudent.indexOf(req.user._id) === -1){
-            //authorize user for this conversation
-
-            allConversations = await Conversation.find({course: conversationId}).sort({"createdAt": -1});
-            // console.log("all conversations inside: ", allConversations);
-        }
-
-        console.log("all conversations: ", allConversations);
-
-        //for extract all conversation to user perticipated
-        let courses = await Profile.findOne({user: req.user._id})
-                                        .populate('course')
-                                        .populate('joinedClass')
-                                        .select({course: 1, _id: 0});
-            
-        // own created courses and joined courses
-        let conversationList = [...courses?.course, ...courses?.joinedClass];
-
-        let conversationName = course.title + " - " + course.batch;
-
-        res.render("pages/inbox/inboxPage", {
-            title: "Conversations",
-            error: {},
-            flashMessage: {},
-            conversations: allConversations,
-            value: conversationList,
-            conversationName,
-            firstTimeGet: 0
-        });
-        
-    } catch (error) {
-        next(error);
-    }
-}; */
-
-// search conversation
-exports.searchConversation = async (req, res, next) => {
-
-    const conversation = req.body.conversation;
-    const searchQuery = user.replace("+88", "");
-  
-    const name_search_regex = new RegExp(escape(searchQuery), "i");
-    const mobile_search_regex = new RegExp("^" + escape("+88" + searchQuery));
-    const email_search_regex = new RegExp("^" + escape(searchQuery) + "$", "i");
-  
-    try {
-      if (searchQuery !== "") {
-        const users = await User.find(
-          {
-            $or: [
-              {
-                name: name_search_regex,
-              },
-              {
-                mobile: mobile_search_regex,
-              },
-              {
-                email: email_search_regex,
-              },
-            ],
-          },
-          "name avatar"
-        );
-  
-        res.json(users);
-      } else {
-        throw createError("You must provide some text to search!");
-      }
-    } catch (err) {
-      res.status(500).json({
-        errors: {
-          common: {
-            msg: err.message,
-          },
-        },
-      });
-    }
-  }
 
 // get messages of a conversation
 exports.getMessages = async (req, res, next) => {
@@ -179,6 +93,7 @@ exports.sendMessagePostController = async (req, res, next) => {
         });
         
         const result = await newMessage.save();
+        await Course.findByIdAndUpdate({_id: req.body.conversationId}, {lastMessageUpdate: Date.now()});
 
         // emit socket event
         global.io.emit("new_message", {
@@ -216,7 +131,7 @@ exports.sendMessagePostController = async (req, res, next) => {
     }
   }
   
-// search user
+// search conversation
 exports.searchConversation = async (req, res, next) => {
 
   const conversationSearch = req.body.conversation;

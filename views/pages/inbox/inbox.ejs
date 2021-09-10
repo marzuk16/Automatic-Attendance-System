@@ -5,16 +5,13 @@
       </div>
       <div id="conversation-list">
         <% conversationList.forEach(function(conversation) { %>
-          
-          <!-- conversation creator is same to logged in user, so we need to show participant name and avatar -->
-          <%# if(conversation.creator.id == loggedInUser.userid) { %>
             
             <div class="conversation" onclick="getMessages('<%= conversation._id %>', '<%= conversation.title %>-<%= conversation.batch %>')">
               
               <img src="./images/male-user.png" alt="<%= conversation.title %>" />
               
               <div class="title-text"><%= conversation.title %>-<%= conversation.batch %></div>
-              <div class="conversation-date"><%#= moment(conversation.last_updated).fromNow() %></div>
+              <div class="conversation-date"><%= moment(conversation.lastMessageUpdate).fromNow() %></div>
             </div>
         <% }); %>
         
@@ -120,11 +117,12 @@
                   let senderAvatar = `${message.sender.profilePics}`;
                   const messageClass = message.sender.id === loggedinUserId ? 'you-message' : 'other-message';
                   const showAvatar = message.sender.id === loggedinUserId ? '' : `<img src="${senderAvatar}" alt="${message.sender.name}" />`;
+                  const showMessage = messageClass === "other-message" ? `<div class="message-text">${message.message}</div><br />` : `<div class="message-text">${message.message}</div>`;
                   
                   // final message html
                   let messageHTML = `<div class="message-row ${messageClass}"><div class="message-content">
                       ${showAvatar}
-                      <div class="message-text">${message.message}</div>
+                      ${showMessage}
                       <div class="message-time">${moment(message.date_time).fromNow()}</div>
                     </div></div>`;
                   allMessages += messageHTML;

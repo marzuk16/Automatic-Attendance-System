@@ -42,7 +42,7 @@ exports.dashboardGetController = async (req, res, next) => {
     }
 };
 
-exports.getProfileConroller = async (req, res, next) => {
+exports.getProfileController = async (req, res, next) => {
     let userId = req.params.userId;
 
     try {

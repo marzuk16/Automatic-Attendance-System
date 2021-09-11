@@ -1,9 +1,8 @@
 <%- include("../../partials/header.ejs") %>
     <div id="chat-container">
       <div id="search-container">
-        <input type="text" placeholder="Search" />
+        <input type="text" id="conversation-search" placeholder="Search" />
       </div>
-      <%- include('../../partials/search-conversation-modal.ejs'); %>
       <div id="conversation-list">
         <% conversationList.forEach(function(conversation) { %>
             
@@ -47,12 +46,83 @@
 
     <script>
       const form = document.querySelector('#chat-form');
+
+      // typing detector
+      let typingTimer;
+      const doneTypingInterval = 500;
+      const input = document.querySelector("input#conversation-search");
+      const conversation_list = document.querySelector("#conversation-list");
+      // let conversations_placeholder = document.querySelector(".search_conversations");
+      
+      //on keyup, start the countdown
+      input.addEventListener("keyup", function () {
+        clearTimeout(typingTimer);
+        // reset
+        conversation_list.style.display = "none";
+        if (input.value) {
+          typingTimer = setTimeout(searchConversations, doneTypingInterval); //user is "finished typing," send search request
+        }
+      });
+      //on keydown, clear the countdown
+      input.addEventListener("keydown", function () {
+        clearTimeout(typingTimer);
+      });
+
+      // for messages
       const messageContainer = document.querySelector('#chat-message-list');
       const chatTitleContainer = document.querySelector('#conversation-partner');
       const loggedinUserId = '<%= user._id %>';
       // const loggedinUserName = '<%#= loggedInUser.username %>';
       let participant = null; // selected conversation participant object
       let current_conversation_id; // selected conversation id
+
+      async function searchConversations() {
+
+        let response = await fetch("/inbox/search", {
+          method: "POST",
+          body: JSON.stringify({
+            conversation: input.value,
+          }),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        });
+
+        // get response
+        let result = await response.json();
+        console.log("searched conversatuions: ", result);
+        // handle error and response
+        if (result.errors) {
+          const errorplaceholder = document.querySelector("p.error");
+          errorplaceholder.textContent = result.errors.common.msg;
+          errorplaceholder.style.display = "block";
+        } else {
+          if (result.length > 0) {
+            let generatedHtml = "<ul>";
+            result.forEach((conversation) => {
+
+              const avatar = "./images/male-user.png";
+              generatedHtml += `<li onclick="getMessages('${conversation._id}', '${conversation.title}-${conversation.batch}')">
+                  <div class="conversation">
+                    <img src="${avatar}" />
+                    <div class="username">${conversation.title}-${conversation.batch}</div>
+                  </div>
+                </li>`;
+            });
+            generatedHtml += "</ul>";
+            conversation_list.innerHTML = generatedHtml;
+            conversation_list.style.display = "block";
+          }
+          else{
+            
+            const avatar = "./images/no-conversation.svg";
+            let generatedHtml = `<div class="nothing"><img src="${avatar}" /></div>`;
+
+            conversation_list.innerHTML = generatedHtml;
+            conversation_list.style.display = "block";
+          }
+        }
+      }
       
       // socket initialization
       const socket = io('<%= process.env.APP_URL %>');
@@ -104,11 +174,7 @@
 
       // get messages of a conversation
       async function getMessages(conversation_id, current_conversation_name){
-        // messages failure toast
-        /* const messagesFailureToast = Toastify({
-          text: "Error loading messages!",
-          duration: 1000,
-        }); */
+
         let response = await fetch(`/inbox/messages/${conversation_id}`);
         const result= await response.json();
         console.log("messages: ", result);
@@ -125,7 +191,7 @@
                   // console.log("message: ", message.sender.profilePics);
                   let senderAvatar = `${message.sender.profilePics}`;
                   const messageClass = message.sender.id === loggedinUserId ? 'you-message' : 'other-message';
-                  const showAvatar = message.sender.id === loggedinUserId ? '' : `<img src="${senderAvatar}" alt="${message.sender.name}" />`;
+                  const showAvatar = message.sender.id === loggedinUserId ? '' : `<img src="${senderAvatar}" alt="${message.sender.name}"title="${message.sender.name}" />`;
                   const showMessage = messageClass === "other-message" ? `<div class="message-text">${message.message}</div><br />` : `<div class="message-text">${message.message}</div>`;
                   
                   // final message html
@@ -143,16 +209,25 @@
               chatTitleContainer.textContent = current_conversation_name;
             }
         } else {
+
+          // messages failure toast
+          const messagesFailureToast = Toastify({
+            text: result.errors.common.msg,
+            duration: 2000,
+          });
+
           messagesFailureToast.showToast();
         }
     }
       // message sending
       form.onsubmit = async function (event) {
+        
         event.preventDefault();
-        /* const sendMessageFailureToast = Toastify({
+        
+        const sendMessageFailureToast = Toastify({
           text: "Error sending message",
           duration: 1000,
-        }); */
+        });
 
         // prepare the form data
         let formData = new FormData(form);
@@ -170,8 +245,8 @@
         if (!result.errors) {
           form.reset(); // reset the form
         } else {
-          // sendMessageFailureToast.showToast();
-          console.log("error occured");
+          sendMessageFailureToast.showToast();
+          // console.log("error occured");
         }
       }
       

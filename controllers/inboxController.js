@@ -122,7 +122,7 @@ exports.sendMessagePostController = async (req, res, next) => {
             ]
         });
 
-        console.log("course: ", course);
+        // console.log("course: ", course);
         if( !course ){
 
           return res.status(401).json({

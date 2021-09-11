@@ -177,7 +177,7 @@
 
         let response = await fetch(`/inbox/messages/${conversation_id}`);
         const result= await response.json();
-        console.log("messages: ", result);
+        // console.log("messages: ", result);
         if(!result.errors && result.data) {
             form.style.visibility = 'visible';
             

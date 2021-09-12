@@ -69,6 +69,7 @@ window.onload = function () {
                 document.getElementById('profilePicsForm').reset()
 
                 $('#crop-modal').modal('hide');
+                location.reload();
             })
     })
 
@@ -84,6 +85,7 @@ window.onload = function () {
                 document.getElementById('removeProfilePics').style.display = 'none'
                 document.getElementById('profilePics').src = data.profilePics
                 document.getElementById('profilePicsForm').reset()
+                location.reload();
             })
             .catch(e => {
                 console.log(e);

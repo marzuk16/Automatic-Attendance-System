@@ -596,51 +596,71 @@ exports.addAttendancePostController = async (req, res, next) => {
 
 exports.updateAttendancePostController = async (req, res, next) => {
     let updatedTable = req.body;
-    if(updatedTable)
-        console.log("up table:", updatedTable);
+    /* if(updatedTable)
+        console.log("up table:", updatedTable); */
 
-    let profile = await Profile.findOne({ user: req.user._id });
-    if (!profile)
-        return res.redirect("/dashboard/create-profile");
+    try {
 
-    let courseId = req.params.courseId;
+        let profile = await Profile.findOne({ user: req.user._id });
+        if (!profile)
+            return res.redirect("/dashboard/create-profile");
 
-    let course = await Course.findOne({ author: req.user._id, _id: courseId });
-    if(!course){
-        req.flash("fail", "Course not found!");
-        return res.redirect(`/dashboard`);
-    }
+        let courseId = req.params.courseId;
 
-    // userName,colName,isChecked
-    for(let i = 0; i < updatedTable.length; i++){
-
-        let table = updatedTable[i];
-
-        let user = await User.findOne({userId: table.userName});
-
-        let attendance = await Attendance.findOne({course: courseId, studentId: user._id});
-        if(attendance){
-            attendance = attendance.toJSON();
-            let value = attendance.value;
-
-            for(let ind = 0; ind < value.length; ind++){
-                let val = value[ind];
-
-               if(table.colName == val.day){
-                   value[ind].isPresent = table.isChecked;
-               }
-            }
-
-            await Attendance.findOneAndUpdate(
-                {course: courseId, studentId: user._id},
-                {$set: {value}},
-                {new: true}
-            );
+        let course = await Course.findOne({ author: req.user._id, _id: courseId });
+        if(!course){
+            req.flash("fail", "Course not found!");
+            return res.redirect(`/dashboard`);
         }
+
+        // userName,colName,isChecked
+        for(let i = 0; i < updatedTable.length; i++){
+
+            let table = updatedTable[i];
+
+            let user = await User.findOne({userId: table.userName});
+
+            let attendance = await Attendance.findOne({course: courseId, studentId: user._id});
+            if(attendance){
+                attendance = attendance.toJSON();
+                let value = attendance.value;
+
+                for(let ind = 0; ind < value.length; ind++){
+                    let val = value[ind];
+
+                if(table.colName == val.day){
+                    value[ind].isPresent = table.isChecked;
+                }
+                }
+
+                await Attendance.findOneAndUpdate(
+                    {course: courseId, studentId: user._id},
+                    {$set: {value}},
+                    {new: true}
+                );
+            }
+        }
+
+        // req.flash("success", "Update successfull !");
+        // return res.redirect(`/courses/take-attendance/${courseId}`);
+
+        return res.status(200).json({
+            message: "Update success!"
+        });
+        
+    } catch (error) {
+
+        res.status(500).json({
+            errors: {
+              common: {
+                msg: err.message,
+              },
+            },
+          });
+        
     }
 
-    req.flash("success", "Update successfull !");
-    return res.redirect(`/courses/take-attendance/${courseId}`);
+    
     
 };
 

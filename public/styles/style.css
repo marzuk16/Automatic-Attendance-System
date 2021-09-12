@@ -207,6 +207,7 @@ a {
 	}
 }
 
+
 /* css custom properties */
 :root {
 	--primary: #171c2a;
@@ -249,7 +250,7 @@ a {
   }
   
   /* modal relayed styles */
-  .modal-wrapper {
+  /* .modal-wrapper {
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -353,14 +354,15 @@ a {
 	width: 24px;
 	height: 24px;
   }
+  */
   
   /* modal related responsive styles */
   
-  @media only screen and (max-width: 600px) {
+/*   @media only screen and (max-width: 600px) {
 	#modal {
 	  width: 390px;
 	}
-  }
+  } */
   
   /* inbox related styles */
   

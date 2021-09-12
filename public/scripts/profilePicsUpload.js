@@ -38,6 +38,7 @@ window.onload = function () {
         }
     })
     $('#cancel-cropping').on('click', function () {
+        document.getElementById('profilePicsForm').reset()
         $('#crop-modal').modal('hide');
     })
 

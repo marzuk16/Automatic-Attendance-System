@@ -13,6 +13,7 @@ Profile
     profilePics
     courses --> [courseId]
     joinedClass --> [courseId]
+    status(1)
 
 Course
     title
@@ -23,10 +24,17 @@ Course
     Author --> userId
     joinedStudent --> [userId]
     attendance --> attendanceId
-    status
+    status(1)
 
 Attendance
     course --> courseId
     studentId --> userId
     value --> [{}]
     day
+    status(1)
+
+Conversation
+    course --> courseId
+    body --> message body
+    sender --> userId
+    status(1)

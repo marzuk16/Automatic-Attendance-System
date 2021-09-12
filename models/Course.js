@@ -52,7 +52,8 @@ const schemaObj = {
     status: {
         type: Boolean,
         default: true
-    }
+    },
+    lastMessageUpdate: Date
 };
 
 const courseSchema = new Schema(schemaObj, { timestamps: true });

@@ -4,6 +4,7 @@
         <thead class="table-active">
             <tr>
                 <th scope="col">Id \ Date</th>
+                <th scope="col">Percentage</th>
                 <% for( let val of attendances[0].value) { %>
                     <th scope="col">
                         <%= val.day%>
@@ -35,18 +36,25 @@
                             <%= attend.userId ? attend.userId : "" %>
                         </a>
                     </th>
-                    <% for (let i = 0; i < attend.value.length-1; i++) { %>
-                        <td>
-                            <!-- for checkbox -->
-                            <div class="form-check">
-                                <input 
-                                    class="attedanceCheck form-check-input" type="checkbox"
-                                    value="" id="flexCheckDefault"
-                                    onclick = getValue(this)
-                                    <%= attend.value[i].isPresent ? "checked" : "" %>
-                                >
-                            </div>
-                        </td>
+                    <% for (let i = 0; i < attend.value.length; i++) { %>
+                        <%#= attend.value[attend.value.length - 1].percentage %> 
+                        <% if ( !i) { %>
+                            <td>
+                                <%= attend.value[attend.value.length - 1].percentage %> % 
+                            </td>
+                        <% } else {%>
+                            <td>
+                                <!-- for checkbox -->
+                                <div class="form-check">
+                                    <input 
+                                        class="attedanceCheck form-check-input" type="checkbox"
+                                        value="" id="flexCheckDefault"
+                                        onclick = getValue(this)
+                                        <%= attend.value[i].isPresent ? "checked" : "" %>
+                                    >
+                                </div>
+                            </td>
+                        <% } %>
                     <% } %>
                 </tr>
                 <% } %>
@@ -96,29 +104,37 @@ function getValue(inputTag) {
 }
 
 async function GetCellValues(courseId) {
-    console.log("values", value);
+    // console.log("values", value);
 
     let url = `http://localhost:3000/courses/attendances/update/${courseId}`;
 
-    await fetch(url, {
+    let response = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(value),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-            setTimeout(() => {
-                location.reload();
-            }, 100);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            setTimeout(() => {
-                location.reload();
-            }, 100);
-    });
+        });
+    let result = await response.json();
+
+    if(result.errrors){
+        // messages failure toast
+        const messagesFailureToast = Toastify({
+            text: result.errors.msg,
+            duration: 2000,
+        });
+
+        messagesFailureToast.showToast();
+    }else{
+
+        // messages failure toast
+        const messagesFailureToast = Toastify({
+            text: "Update success!",
+            duration: 2000,
+        });
+
+        messagesFailureToast.showToast();
+    }
+    
 }
 </script>

@@ -6,7 +6,7 @@ const { isAuthenticated } = require("../middleware/authMiddleware");
 
 const { 
     dashboardGetController,
-    getProfileConroller,
+    getProfileController,
     createProfileGetController,
     createProfilePostController,
     editProfileGetController,
@@ -18,7 +18,7 @@ const {
 
 router.get("/", isAuthenticated, dashboardGetController);
 
-router.get("/profile/:userId", isAuthenticated, getProfileConroller);
+router.get("/profile/:userId", isAuthenticated, getProfileController);
 
 router.get("/create-profile", isAuthenticated, createProfileGetController);
 router.post("/create-profile", isAuthenticated, profileValidator, createProfilePostController

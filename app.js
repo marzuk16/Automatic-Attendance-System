@@ -2,12 +2,23 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const config = require("config");
+const moment = require("moment");
+const http = require("http");
 
 const setMiddleware = require("./middleware/middleware");
 
 const setRoutes = require("./routes/routes");
 
 const app = express();
+
+//for socket communication
+const server = http.createServer(app);
+
+//socket creation
+const io = require("socket.io")(server);
+global.io = io; //gloabl object in node js
+
+app.locals.moment = moment;
 
 //variables for db configure
 const PORT = process.env.PORT || 3000;
@@ -52,7 +63,7 @@ mongoose.connect(mongoDBUrl, {
 })
 .then(() => {
     //console.log(`Database connected`);
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`SERVER IS RUNNING ON ${PORT}`);
     });
 })

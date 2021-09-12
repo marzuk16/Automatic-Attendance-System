@@ -410,7 +410,7 @@ exports.takeAttendanceGetController = async (req, res, next) => {
     }
 
 };
-exports.takeAttendancePostController = async (req, res, next) => {
+/* exports.takeAttendancePostController = async (req, res, next) => {
     //localhost:3000/courses/take-attendance/id
 
     let courseId = req.params.courseId;
@@ -434,7 +434,7 @@ exports.takeAttendancePostController = async (req, res, next) => {
     req.flash("success", "Today's attendance added.");
     return res.redirect(`/courses/take-attendance/${courseId}`);
 
-};
+}; */
 
 exports.searchAttendancePostController = async (req, res, next) => {
     console.log("search: ", req.body);
@@ -605,8 +605,8 @@ exports.addAttendancePostController = async (req, res, next) => {
 
 exports.updateAttendancePostController = async (req, res, next) => {
     let updatedTable = req.body;
-    /* if(updatedTable)
-        console.log("up table:", updatedTable); */
+    if(updatedTable)
+        console.log("up table:", updatedTable);
 
     try {
 
@@ -623,7 +623,7 @@ exports.updateAttendancePostController = async (req, res, next) => {
         }
 
         // userName,colName,isChecked
-        for(let i = 0; i < updatedTable.length; i++){
+        for(let i = 0; i < updatedTable?.length; i++){
 
             let table = updatedTable[i];
 
@@ -642,11 +642,13 @@ exports.updateAttendancePostController = async (req, res, next) => {
                 }
                 }
 
-                await Attendance.findOneAndUpdate(
+                let updatedValues = await Attendance.findOneAndUpdate(
                     {course: courseId, studentId: user._id},
                     {$set: {value}},
                     {new: true}
                 );
+
+                console.log("updatedValues: ", updatedValues);
             }
         }
 

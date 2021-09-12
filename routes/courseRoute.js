@@ -12,7 +12,6 @@ const {
     removeStudentFromCoursePostController,
     myAttendanceGetController,
     takeAttendanceGetController,
-    takeAttendancePostController,
     searchAttendancePostController,
     addAttendancePostController,
     updateAttendancePostController,
@@ -24,7 +23,7 @@ router.get("/create", isAuthenticated, createCourseGetController);
 router.post("/create", isAuthenticated, courseValidator, createCoursePostController);
 
 router.get("/take-attendance/:courseId", isAuthenticated, takeAttendanceGetController);
-router.post("/take-attendance/:courseId", isAuthenticated, takeAttendancePostController);
+// router.post("/take-attendance/:courseId", isAuthenticated, takeAttendancePostController);
 
 router.get("/take-attendances/:courseId", 
     isAuthenticated,

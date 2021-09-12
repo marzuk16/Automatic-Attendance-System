@@ -1,4 +1,4 @@
-<div class="col-md-12 bg-white rounded shadow mt-2">
+<div class="bg-white rounded shadow mt-2">
     <h4 class="text-center"><u>Your Attendance List</u></h4>
     <table class="table table-hover" id="table">
         <thead class="table-active">
@@ -118,22 +118,20 @@ async function GetCellValues(courseId) {
     let result = await response.json();
 
     if(result.errrors){
-        // messages failure toast
-        const messagesFailureToast = Toastify({
+        // update failure toast
+        Toastify({
             text: result.errors.msg,
             duration: 2000,
-        });
-
-        messagesFailureToast.showToast();
+        }).showToast();
     }else{
 
-        // messages failure toast
-        const messagesFailureToast = Toastify({
+
+        location.reload();
+        // update success toast
+        Toastify({
             text: "Update success!",
             duration: 2000,
-        });
-
-        messagesFailureToast.showToast();
+        }).showToast();
     }
     
 }

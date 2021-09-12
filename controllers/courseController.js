@@ -652,12 +652,12 @@ exports.updateAttendancePostController = async (req, res, next) => {
             }
         }
 
-        // req.flash("success", "Update successfull !");
-        // return res.redirect(`/courses/take-attendance/${courseId}`);
+        req.flash("success", "Update successfull !");
+        return res.redirect(`/courses/take-attendance/${courseId}`);
 
-        return res.status(200).json({
+        /* return res.status(200).json({
             message: "Update success!"
-        });
+        }); */
         
     } catch (error) {
 

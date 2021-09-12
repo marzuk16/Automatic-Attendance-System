@@ -107,32 +107,36 @@ async function GetCellValues(courseId) {
     // console.log("values", value);
 
     let url = `http://localhost:3000/courses/attendances/update/${courseId}`;
-
-    let response = await fetch(url, {
+    
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(value),
+        })
+        .then(response => response)
+        .then( data => {
+            setTimeout(() => {
+                // loacation.reload();
+                // update success toast
+                Toastify({
+                    text: "Update success!",
+                    duration: 2000,
+                }).showToast();
+            }, 100);
+        })
+        .catch( error => {
+            console.log("error: ", error);
+            setTimeout(() => {
+                // location.reload();
+                // update failure toast
+                Toastify({
+                    text: "error occured",
+                    duration: 2000,
+                }).showToast();
+            }, 100);
         });
-    let result = await response.json();
-
-    if(result.errrors){
-        // update failure toast
-        Toastify({
-            text: result.errors.msg,
-            duration: 2000,
-        }).showToast();
-    }else{
-
-
-        location.reload();
-        // update success toast
-        Toastify({
-            text: "Update success!",
-            duration: 2000,
-        }).showToast();
-    }
     
 }
 </script>

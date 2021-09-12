@@ -4,6 +4,7 @@
         <thead class="table-active">
             <tr>
                 <th scope="col">Id \ Date</th>
+                <th scope="col">Percentage</th>
                 <% for( let val of attendances[0].value) { %>
                     <th scope="col">
                         <%= val.day%>
@@ -35,18 +36,25 @@
                             <%= attend.userId ? attend.userId : "" %>
                         </a>
                     </th>
-                    <% for (let i = 0; i < attend.value.length-1; i++) { %>
-                        <td>
-                            <!-- for checkbox -->
-                            <div class="form-check">
-                                <input 
-                                    class="attedanceCheck form-check-input" type="checkbox"
-                                    value="" id="flexCheckDefault"
-                                    onclick = getValue(this)
-                                    <%= attend.value[i].isPresent ? "checked" : "" %>
-                                >
-                            </div>
-                        </td>
+                    <% for (let i = 0; i < attend.value.length; i++) { %>
+                        <%#= attend.value[attend.value.length - 1].percentage %> 
+                        <% if ( !i) { %>
+                            <td>
+                                <%= attend.value[attend.value.length - 1].percentage %> % 
+                            </td>
+                        <% } else {%>
+                            <td>
+                                <!-- for checkbox -->
+                                <div class="form-check">
+                                    <input 
+                                        class="attedanceCheck form-check-input" type="checkbox"
+                                        value="" id="flexCheckDefault"
+                                        onclick = getValue(this)
+                                        <%= attend.value[i].isPresent ? "checked" : "" %>
+                                    >
+                                </div>
+                            </td>
+                        <% } %>
                     <% } %>
                 </tr>
                 <% } %>

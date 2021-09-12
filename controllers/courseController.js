@@ -302,17 +302,23 @@ exports.myAttendanceGetController = async (req, res, next) => {
 
         tmp1 = tmp1?.toJSON();
         tmp1.userId = req.user.userId;
+        console.log("tmp1: ", tmp1.value);
+
 
         let present = 0, absent = 0;
-            for(val of tmp1.value){
+        for(val of tmp1.value){
 
-                // console.log("ispreent: ", val.isPresent);
-                val.isPresent ? present++ : absent++ ;
-            }
+            // console.log("ispreent: ", val.isPresent);
+            val.isPresent ? present++ : absent++ ;
+        }
 
-            tmp1.value.push({present, absent});
+
+        let percentage = tmp1.value.length ? ((present * 100 ) / tmp1.value.length).toFixed(2) : 0;
+
+        tmp1.value.push({present, absent, percentage});
 
         attendances.push(tmp1);
+        console.log("tmp1: ", tmp1.value);
         
         res.render("pages/dashboard/course/take-attendance.ejs", {
             title: "Take Attendance",
@@ -356,6 +362,7 @@ exports.takeAttendanceGetController = async (req, res, next) => {
         let today = currentDay();
 
         for(let stdnt of joinedStudent){
+
             tmp = await User.findOne({_id: stdnt});
             tmp1 = await Attendance.findOne({ course: courseId, studentId:  stdnt});
 
@@ -369,7 +376,9 @@ exports.takeAttendanceGetController = async (req, res, next) => {
                 val.isPresent ? present++ : absent++ ;
             }
 
-            tmp1.value.push({present, absent});
+            let percentage = tmp1.value.length ? ((present * 100 ) / tmp1.value.length).toFixed(2) : 0;
+
+            tmp1.value.push({present, absent, percentage});
 
             attendances.push(tmp1);
             // console.log("tmp1: ", tmp1);
@@ -762,12 +771,25 @@ const exportExcel = (data, workSheetColumnNames, workSheetName, filePath) => {
 };
 
 const exportDataToExcel = (dataMatrix, workSheetColumnNames, workSheetName, filePath) => {
-    console.log("dataMatrix: ", dataMatrix);
+    // console.log("dataMatrix: ", dataMatrix);
     const data = dataMatrix.map(x => {
-        let tmp = [x[0]];
+    console.log("dataMatrix: ", x);
+
+        let tmp = [x[0], 0], present = 0;
         
-        for(let i = 1; i<x.length; i++)
-            x[i].isPresent ? tmp.push(1) : tmp.push(0);
+        for(let i = 1; i<x.length; i++) {
+
+            if(x[i].isPresent){
+
+                tmp.push(1);
+                present ++;
+            }else
+                tmp.push(0);
+        }
+            // x[i].isPresent ? tmp.push(1) : tmp.push(0);
+        let percentage = (x.length - 1 > 0 ) ? ((present * 100) / (x.length - 1) ).toFixed(2) : 0;
+
+        tmp[1] = `${percentage} %`;
 
         return tmp;
     });
@@ -809,7 +831,7 @@ exports.exportAttendanceGetController = async (req, res, next) => {
 
         console.log("data: ", data);
 
-        let workSheetColumnName = ['Id \\ Date'];
+        let workSheetColumnName = ['Id \\ Date', 'Percentage'];
 
         for(let i = 1; i<data[0].length; i++) 
             workSheetColumnName.push(data[0][i].day);

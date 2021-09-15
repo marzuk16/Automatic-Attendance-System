@@ -38,7 +38,7 @@
                     </th>
                     <% for (let i = 0; i < attend.value.length; i++) { %>
                         <%#= attend.value[attend.value.length - 1].percentage %> 
-                        <% if ( !i) { %>
+                        <% if ( !i ) { %>
                             <td>
                                 <%= attend.value[attend.value.length - 1].percentage %> % 
                             </td>
@@ -46,11 +46,12 @@
                             <td>
                                 <!-- for checkbox -->
                                 <div class="form-check">
+                                    
                                     <input 
                                         class="attedanceCheck form-check-input" type="checkbox"
                                         value="" id="flexCheckDefault"
                                         onclick = getValue(this)
-                                        <%= attend.value[i].isPresent ? "checked" : "" %>
+                                        <%= attend.value[i-1].isPresent ? "checked" : "" %>
                                     >
                                 </div>
                             </td>

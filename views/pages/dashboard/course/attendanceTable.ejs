@@ -118,14 +118,17 @@ async function GetCellValues(courseId) {
         })
         .then(response => response)
         .then( data => {
+            
+            location.reload();
             setTimeout(() => {
-                // loacation.reload();
-                // update success toast
-                Toastify({
+            //    location.reload();
+               // update success toast
+            Toastify({
                     text: "Update success!",
-                    duration: 2000,
+                    duration: 1000,
                 }).showToast();
             }, 100);
+
         })
         .catch( error => {
             console.log("error: ", error);
@@ -134,6 +137,7 @@ async function GetCellValues(courseId) {
                 // update failure toast
                 Toastify({
                     text: "error occured",
+                    backgroundColor: "#ff6666",
                     duration: 2000,
                 }).showToast();
             }, 100);

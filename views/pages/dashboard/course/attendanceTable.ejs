@@ -26,7 +26,7 @@
         </thead>
         <tbody>
             <% for( let attend of attendances) { %>
-                <%#= attend.value[0].isPresent %> 
+                <%#= attend %> 
                 <tr>
                     <th scope="row">
                         <a href="/dashboard/profile/<%= attend.userId%>"
@@ -37,7 +37,6 @@
                         </a>
                     </th>
                     <% for (let i = 0; i < attend.value.length; i++) { %>
-                        <%#= attend.value[attend.value.length - 1].percentage %> 
                         <% if ( !i ) { %>
                             <td>
                                 <%= attend.value[attend.value.length - 1].percentage %> % 

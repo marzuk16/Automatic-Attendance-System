@@ -207,7 +207,7 @@ exports.editCoursePostController = async (req, res, next) => {
         }
 
         let hasCourse = await Course.findOne(
-            { author: req.user._id, code, batch, term }
+            { author: req.user._id, title, code, batch, term }
         );
 
         if (hasCourse) {
@@ -230,7 +230,7 @@ exports.editCoursePostController = async (req, res, next) => {
         }
 
         let updatedCourse = await Course.findByIdAndUpdate(courseId,
-            {$set: {title: title, code: code, batch: batch, term: term}},
+            {$set: {title, code, batch, term}},
             {new: true}
         );
         req.flash("success", "Course update successfull");
@@ -499,7 +499,6 @@ exports.searchAttendancePostController = async (req, res, next) => {
             attendances[0].value.push({present, absent, percentage});
             
         }else if(userId){
-            // console.log("user: ", userId);
 
             attendances = [];
             let attendance = await Attendance.findOne({course: courseId, studentId: userid});
@@ -509,6 +508,8 @@ exports.searchAttendancePostController = async (req, res, next) => {
                 return res.redirect(`/courses/take-attendance/${courseId}`);
             }
 
+            let x = JSON.stringify(attendance);
+            attendance = JSON.parse(x);
 
             attendance.userId = userId;
 
@@ -518,16 +519,9 @@ exports.searchAttendancePostController = async (req, res, next) => {
                 item.isPresent ? present ++ : absent ++;
             }
 
-            // console.log("aa[0}: ", attendances[0]);
             let percentage = ((present * 100 ) / (present + absent)).toFixed(2);
             attendance.value.push({present, absent, percentage});
-
-            attendances.push( attendance );
-
-            for(let item of attendances[0].value){
-
-                console.log("item: ", item);
-            }
+            attendances.push(attendance);
 
         }else if(date){
             console.log("date: ", date);
@@ -604,6 +598,7 @@ exports.addAttendancePostController = async (req, res, next) => {
         let { joinedStudent } = course.toJSON();
 
         attendances = [];
+        
         for(let stdnt of joinedStudent){
             let attendancesBSON = await Attendance.findOneAndUpdate(
                 {course: courseId, studentId: stdnt},
@@ -630,8 +625,6 @@ exports.addAttendancePostController = async (req, res, next) => {
             let percentage =  ((present * 100 ) / (present + absent)).toFixed(2);
 
             attendancesBSON.value.push({present, absent, percentage});
-
-            console.log("attendancesBSON: ", attendancesBSON);
 
             attendances.push(attendancesBSON);
         }

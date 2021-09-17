@@ -26,7 +26,7 @@
         </thead>
         <tbody>
             <% for( let attend of attendances) { %>
-                <%#= attend.value[0].isPresent %> 
+                <%#= attend %> 
                 <tr>
                     <th scope="row">
                         <a href="/dashboard/profile/<%= attend.userId%>"
@@ -37,8 +37,7 @@
                         </a>
                     </th>
                     <% for (let i = 0; i < attend.value.length; i++) { %>
-                        <%#= attend.value[attend.value.length - 1].percentage %> 
-                        <% if ( !i) { %>
+                        <% if ( !i ) { %>
                             <td>
                                 <%= attend.value[attend.value.length - 1].percentage %> % 
                             </td>
@@ -46,11 +45,12 @@
                             <td>
                                 <!-- for checkbox -->
                                 <div class="form-check">
+                                    
                                     <input 
                                         class="attedanceCheck form-check-input" type="checkbox"
                                         value="" id="flexCheckDefault"
                                         onclick = getValue(this)
-                                        <%= attend.value[i].isPresent ? "checked" : "" %>
+                                        <%= attend.value[i-1].isPresent ? "checked" : "" %>
                                     >
                                 </div>
                             </td>
@@ -107,34 +107,40 @@ async function GetCellValues(courseId) {
     // console.log("values", value);
 
     let url = `http://localhost:3000/courses/attendances/update/${courseId}`;
-
-    let response = await fetch(url, {
+    
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(value),
+        })
+        .then(response => response)
+        .then( data => {
+            
+            location.reload();
+            setTimeout(() => {
+            //    location.reload();
+               // update success toast
+            Toastify({
+                    text: "Update success!",
+                    duration: 1000,
+                }).showToast();
+            }, 100);
+
+        })
+        .catch( error => {
+            console.log("error: ", error);
+            setTimeout(() => {
+                // location.reload();
+                // update failure toast
+                Toastify({
+                    text: "error occured",
+                    backgroundColor: "#ff6666",
+                    duration: 2000,
+                }).showToast();
+            }, 100);
         });
-    let result = await response.json();
-
-    if(result.errrors){
-        // messages failure toast
-        const messagesFailureToast = Toastify({
-            text: result.errors.msg,
-            duration: 2000,
-        });
-
-        messagesFailureToast.showToast();
-    }else{
-
-        // messages failure toast
-        const messagesFailureToast = Toastify({
-            text: "Update success!",
-            duration: 2000,
-        });
-
-        messagesFailureToast.showToast();
-    }
     
 }
 </script>

@@ -1,0 +1,8 @@
+add attendance validate to backend
+fix showing date on attendnace table
+
+edit profile recheck
+new attendance add reload problem --> fixed
+University list
+
+***Index problem in search, add attendances for percentage. --> fixed

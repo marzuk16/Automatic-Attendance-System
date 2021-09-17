@@ -1,6 +1,5 @@
-let x = ["a", "b", "c"];
-let y = ["d", "e", "f"];
+let a = b = 0;
 
-let z = [...x, ...y];
+// a ++;
 
-console.log(z);
+console.log(a, " ", b);

@@ -227,9 +227,11 @@ exports.resetPasswordPostController = (req, res, next) => {
             if (err) console.log("crypto error: ", err);
             const token = await buffer.toString("hex");
 
+            let aliveLinkInMinutes = 15;
+            let expireToken = Date.now() + (60 * 1000 * aliveLinkInMinutes);
             let user = await User.findOneAndUpdate(
                 { userId },
-                { $set: { resetToken: token, expireToken: Date.now() + 900 } }
+                { $set: { resetToken: token, expireToken } }
             );
             if (!user) {
                 req.flash("fail", "Invalid userId !");
@@ -247,9 +249,10 @@ exports.resetPasswordPostController = (req, res, next) => {
                 subject: 'Reset Password - Automatic Attendance System',
                 text: 'Click Here',
                 html: `
+                    <h1>Hi, ${user.userId},</h1>
                     <p>You requested for password reset</p>
                     <h4><a href="http://localhost:3000/auth/reset-password/${token}" >Click Here</a> to reset password</h4>
-                    <p>If you are not request, ignore it.</>
+                    <p>If you are not request, ignore it. This password reset link is valid for next 15 minutes.</p>
                 `,
             }
             sgMail.send(msg);
@@ -265,7 +268,13 @@ exports.resetPasswordPostController = (req, res, next) => {
 
 exports.newPasswordGetController = async (req, res, next) => {
     let token = req.params.token;
-    let user = await User.findOne({ resetToken: token, expireToken: { $gt: Date.now()}});
+    console.log("token: ", token, "date: ", Date.now());
+    let user = await User.findOne({ 
+        resetToken: token,
+        expireToken: { $gt: Date.now()}
+    });
+
+    console.log("user: ", user);
     if (!user) {
         req.flash('fail', 'Link expired, Try again!');
         return res.render('pages/auth/resetPassword', {
@@ -281,6 +290,7 @@ exports.newPasswordGetController = async (req, res, next) => {
         flashMessage: {}
     })
 }
+
 exports.newPasswordPostController = async (req, res, next) => {
     let token = req.params.token;
     let errors = validationResult(req).formatWith(errorFormatter);

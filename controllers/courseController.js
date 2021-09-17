@@ -69,6 +69,7 @@ exports.createCoursePostController = async (req, res, next) => {
         term,
         joiningCode,
         author: req.user._id,
+        lastMessageUpdate: Date.now()
     });
 
     try {
@@ -206,7 +207,7 @@ exports.editCoursePostController = async (req, res, next) => {
         }
 
         let hasCourse = await Course.findOne(
-            { author: req.user._id, code, batch, term }
+            { author: req.user._id, title, code, batch, term }
         );
 
         if (hasCourse) {
@@ -229,7 +230,7 @@ exports.editCoursePostController = async (req, res, next) => {
         }
 
         let updatedCourse = await Course.findByIdAndUpdate(courseId,
-            {$set: {title: title, code: code, batch: batch, term: term}},
+            {$set: {title, code, batch, term}},
             {new: true}
         );
         req.flash("success", "Course update successfull");
@@ -301,17 +302,23 @@ exports.myAttendanceGetController = async (req, res, next) => {
 
         tmp1 = tmp1?.toJSON();
         tmp1.userId = req.user.userId;
+        console.log("tmp1: ", tmp1.value);
+
 
         let present = 0, absent = 0;
-            for(val of tmp1.value){
+        for(val of tmp1.value){
 
-                // console.log("ispreent: ", val.isPresent);
-                val.isPresent ? present++ : absent++ ;
-            }
+            // console.log("ispreent: ", val.isPresent);
+            val.isPresent ? present++ : absent++ ;
+        }
 
-            tmp1.value.push({present, absent});
+
+        let percentage = tmp1.value.length ? ((present * 100 ) / tmp1.value.length).toFixed(2) : 0;
+
+        tmp1.value.push({present, absent, percentage});
 
         attendances.push(tmp1);
+        console.log("tmp1: ", tmp1.value);
         
         res.render("pages/dashboard/course/take-attendance.ejs", {
             title: "Take Attendance",
@@ -355,20 +362,23 @@ exports.takeAttendanceGetController = async (req, res, next) => {
         let today = currentDay();
 
         for(let stdnt of joinedStudent){
+
             tmp = await User.findOne({_id: stdnt});
             tmp1 = await Attendance.findOne({ course: courseId, studentId:  stdnt});
 
             tmp1 = tmp1?.toJSON();
             tmp1.userId = tmp.userId;
 
-            let present = 0, absent = 0;
+            let present = absent = 0;
             for(val of tmp1.value){
 
                 // console.log("ispreent: ", val.isPresent);
                 val.isPresent ? present++ : absent++ ;
             }
 
-            tmp1.value.push({present, absent});
+            let percentage = ((present * 100 ) / (present + absent)).toFixed(2);
+
+            tmp1.value.push({present, absent, percentage});
 
             attendances.push(tmp1);
             // console.log("tmp1: ", tmp1);
@@ -400,7 +410,7 @@ exports.takeAttendanceGetController = async (req, res, next) => {
     }
 
 };
-exports.takeAttendancePostController = async (req, res, next) => {
+/* exports.takeAttendancePostController = async (req, res, next) => {
     //localhost:3000/courses/take-attendance/id
 
     let courseId = req.params.courseId;
@@ -424,7 +434,7 @@ exports.takeAttendancePostController = async (req, res, next) => {
     req.flash("success", "Today's attendance added.");
     return res.redirect(`/courses/take-attendance/${courseId}`);
 
-};
+}; */
 
 exports.searchAttendancePostController = async (req, res, next) => {
     console.log("search: ", req.body);
@@ -455,11 +465,16 @@ exports.searchAttendancePostController = async (req, res, next) => {
                 return res.redirect(`/courses/take-attendance/${courseId}`);
             }
             let flag = true;
+            let present = absent = 0, x;
+
             for(let val of attendances.value){
+
+                val.isPresent ? present ++ : absent ++;
+
                 if(date == val.day){
                     flag = false;
                     console.log("matched");
-                    let x = {
+                    x = {
                         course: attendances.course,
                         studentId: attendances.studentId,
                         userId,
@@ -470,26 +485,44 @@ exports.searchAttendancePostController = async (req, res, next) => {
                             }
                         ]
                     };
-
-                    attendances = [];
-                    attendances.push(x);
                 }
             }
             if(flag){
                 req.flash("fail", " Data not found!");
                 return res.redirect(`/courses/take-attendance/${courseId}`);
             }
-        }else if(userId){
-            console.log("user: ", userId);
 
             attendances = [];
-            attendances.push( await Attendance.findOne({course: courseId, studentId: userid}));
-            if(!attendances[0]){
+            attendances.push(x);
+
+            let percentage = ((present * 100 ) / (present + absent)).toFixed(2);
+            attendances[0].value.push({present, absent, percentage});
+            
+        }else if(userId){
+
+            attendances = [];
+            let attendance = await Attendance.findOne({course: courseId, studentId: userid});
+            
+            if(!attendance){
                 req.flash("fail", " Data not found!");
                 return res.redirect(`/courses/take-attendance/${courseId}`);
             }
-            attendances[0].toJSON();
-            attendances[0].userId = userId;
+
+            let x = JSON.stringify(attendance);
+            attendance = JSON.parse(x);
+
+            attendance.userId = userId;
+
+            let present = absent = 0;
+            for(let item of attendance.value){
+
+                item.isPresent ? present ++ : absent ++;
+            }
+
+            let percentage = ((present * 100 ) / (present + absent)).toFixed(2);
+            attendance.value.push({present, absent, percentage});
+            attendances.push(attendance);
+
         }else if(date){
             console.log("date: ", date);
 
@@ -508,9 +541,20 @@ exports.searchAttendancePostController = async (req, res, next) => {
                     }
                 }
 
+                let present = absent = 0;
+
+                for(let item of attendance.value){
+
+                    item.isPresent ? present ++ : absent ++;
+                }
+
+                let percentage = ((present * 100 ) / (present + absent)).toFixed(2);
+
                 let value = [];
                 if(attendance.value[index]){
                     value.push(attendance.value[index]);
+                    value.push({present, absent, percentage});
+
                     let x = {
                         course: attendance.course,
                         studentId: attendance.studentId,
@@ -554,6 +598,7 @@ exports.addAttendancePostController = async (req, res, next) => {
         let { joinedStudent } = course.toJSON();
 
         attendances = [];
+        
         for(let stdnt of joinedStudent){
             let attendancesBSON = await Attendance.findOneAndUpdate(
                 {course: courseId, studentId: stdnt},
@@ -571,6 +616,15 @@ exports.addAttendancePostController = async (req, res, next) => {
             attendancesBSON = attendancesBSON.toJSON();
             tmp = await User.findOne({_id: attendancesBSON.studentId});
             attendancesBSON.userId = tmp.userId;
+            
+            let present = absent = 0;
+            for(let item of attendancesBSON.value){
+
+                item.isPresent ? present ++ : absent ++;
+            }
+            let percentage =  ((present * 100 ) / (present + absent)).toFixed(2);
+
+            attendancesBSON.value.push({present, absent, percentage});
 
             attendances.push(attendancesBSON);
         }
@@ -598,48 +652,70 @@ exports.updateAttendancePostController = async (req, res, next) => {
     if(updatedTable)
         console.log("up table:", updatedTable);
 
-    let profile = await Profile.findOne({ user: req.user._id });
-    if (!profile)
-        return res.redirect("/dashboard/create-profile");
+    try {
 
-    let courseId = req.params.courseId;
+        let profile = await Profile.findOne({ user: req.user._id });
+        if (!profile)
+            return res.redirect("/dashboard/create-profile");
 
-    let course = await Course.findOne({ author: req.user._id, _id: courseId });
-    if(!course){
-        req.flash("fail", "Course not found!");
-        return res.redirect(`/dashboard`);
-    }
+        let courseId = req.params.courseId;
 
-    // userName,colName,isChecked
-    for(let i = 0; i < updatedTable.length; i++){
-
-        let table = updatedTable[i];
-
-        let user = await User.findOne({userId: table.userName});
-
-        let attendance = await Attendance.findOne({course: courseId, studentId: user._id});
-        if(attendance){
-            attendance = attendance.toJSON();
-            let value = attendance.value;
-
-            for(let ind = 0; ind < value.length; ind++){
-                let val = value[ind];
-
-               if(table.colName == val.day){
-                   value[ind].isPresent = table.isChecked;
-               }
-            }
-
-            await Attendance.findOneAndUpdate(
-                {course: courseId, studentId: user._id},
-                {$set: {value}},
-                {new: true}
-            );
+        let course = await Course.findOne({ author: req.user._id, _id: courseId });
+        if(!course){
+            req.flash("fail", "Course not found!");
+            return res.redirect(`/dashboard`);
         }
+
+        // userName,colName,isChecked
+        for(let i = 0; i < updatedTable?.length; i++){
+
+            let table = updatedTable[i];
+
+            let user = await User.findOne({userId: table.userName});
+
+            let attendance = await Attendance.findOne({course: courseId, studentId: user._id});
+            if(attendance){
+                attendance = attendance.toJSON();
+                let value = attendance.value;
+
+                for(let ind = 0; ind < value.length; ind++){
+                    let val = value[ind];
+
+                if(table.colName == val.day){
+                    value[ind].isPresent = table.isChecked;
+                }
+                }
+
+                let updatedValues = await Attendance.findOneAndUpdate(
+                    {course: courseId, studentId: user._id},
+                    {$set: {value}},
+                    {new: true}
+                );
+
+                console.log("updatedValues: ", updatedValues);
+            }
+        }
+
+        // req.flash("success", "Update successfull !");
+        return res.redirect(`/courses/take-attendance/${courseId}`);
+
+        /* return res.status(200).json({
+            message: "Update success!"
+        }); */
+        
+    } catch (error) {
+
+        res.status(500).json({
+            errors: {
+              common: {
+                msg: err.message,
+              },
+            },
+          });
+        
     }
 
-    req.flash("success", "Update successfull !");
-    return res.redirect(`/courses/take-attendance/${courseId}`);
+    
     
 };
 
@@ -741,12 +817,25 @@ const exportExcel = (data, workSheetColumnNames, workSheetName, filePath) => {
 };
 
 const exportDataToExcel = (dataMatrix, workSheetColumnNames, workSheetName, filePath) => {
-    console.log("dataMatrix: ", dataMatrix);
+    // console.log("dataMatrix: ", dataMatrix);
     const data = dataMatrix.map(x => {
-        let tmp = [x[0]];
+    console.log("dataMatrix: ", x);
+
+        let tmp = [x[0], 0], present = 0;
         
-        for(let i = 1; i<x.length; i++)
-            x[i].isPresent ? tmp.push(1) : tmp.push(0);
+        for(let i = 1; i<x.length; i++) {
+
+            if(x[i].isPresent){
+
+                tmp.push(1);
+                present ++;
+            }else
+                tmp.push(0);
+        }
+            // x[i].isPresent ? tmp.push(1) : tmp.push(0);
+        let percentage = (x.length - 1 > 0 ) ? ((present * 100) / (x.length - 1) ).toFixed(2) : 0;
+
+        tmp[1] = `${percentage} %`;
 
         return tmp;
     });
@@ -788,7 +877,7 @@ exports.exportAttendanceGetController = async (req, res, next) => {
 
         console.log("data: ", data);
 
-        let workSheetColumnName = ['Id \\ Date'];
+        let workSheetColumnName = ['Id \\ Date', 'Percentage'];
 
         for(let i = 1; i<data[0].length; i++) 
             workSheetColumnName.push(data[0][i].day);

@@ -4,6 +4,7 @@
         <thead class="table-active">
             <tr>
                 <th scope="col">Id \ Date</th>
+                <th scope="col">Percentage</th>
                 <% for( let val of attendances[0].value) { %>
                     <th scope="col">
                         <%= val.day%>
@@ -25,7 +26,7 @@
         </thead>
         <tbody>
             <% for( let attend of attendances) { %>
-                <%#= attend.value[0].isPresent %> 
+                <%#= attend %> 
                 <tr>
                     <th scope="row">
                         <a href="/dashboard/profile/<%= attend.userId%>"
@@ -35,18 +36,25 @@
                             <%= attend.userId ? attend.userId : "" %>
                         </a>
                     </th>
-                    <% for (let i = 0; i < attend.value.length-1; i++) { %>
-                        <td>
-                            <!-- for checkbox -->
-                            <div class="form-check">
-                                <input 
-                                    class="attedanceCheck form-check-input" type="checkbox"
-                                    value="" id="flexCheckDefault"
-                                    onclick = getValue(this)
-                                    <%= attend.value[i].isPresent ? "checked" : "" %>
-                                >
-                            </div>
-                        </td>
+                    <% for (let i = 0; i < attend.value.length; i++) { %>
+                        <% if ( !i ) { %>
+                            <td>
+                                <%= attend.value[attend.value.length - 1].percentage %> % 
+                            </td>
+                        <% } else {%>
+                            <td>
+                                <!-- for checkbox -->
+                                <div class="form-check">
+                                    
+                                    <input 
+                                        class="attedanceCheck form-check-input" type="checkbox"
+                                        value="" id="flexCheckDefault"
+                                        onclick = getValue(this)
+                                        <%= attend.value[i-1].isPresent ? "checked" : "" %>
+                                    >
+                                </div>
+                            </td>
+                        <% } %>
                     <% } %>
                 </tr>
                 <% } %>
@@ -96,29 +104,43 @@ function getValue(inputTag) {
 }
 
 async function GetCellValues(courseId) {
-    console.log("values", value);
+    // console.log("values", value);
 
     let url = `http://localhost:3000/courses/attendances/update/${courseId}`;
-
-    await fetch(url, {
+    
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(value),
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
+        .then(response => response)
+        .then( data => {
+            
+            location.reload();
             setTimeout(() => {
-                location.reload();
+            //    location.reload();
+               // update success toast
+            Toastify({
+                    text: "Update success!",
+                    duration: 1000,
+                }).showToast();
             }, 100);
+
         })
-        .catch((error) => {
-            console.error('Error:', error);
+        .catch( error => {
+            console.log("error: ", error);
             setTimeout(() => {
-                location.reload();
+                // location.reload();
+                // update failure toast
+                Toastify({
+                    text: "error occured",
+                    backgroundColor: "#ff6666",
+                    duration: 2000,
+                }).showToast();
             }, 100);
-    });
+        });
+    
 }
 </script>

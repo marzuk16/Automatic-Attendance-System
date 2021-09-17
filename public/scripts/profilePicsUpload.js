@@ -1,12 +1,13 @@
 window.onload = function () {
+    
     let baseCropping = $('#cropped-image').croppie({
         viewport: {
-            width: 200,
-            height: 200
+            width: 250,
+            height: 250
         },
         boundary: {
-            width: 300,
-            height: 300
+            width: 350,
+            height: 350
         },
         showZoomer: true
     })
@@ -37,6 +38,7 @@ window.onload = function () {
         }
     })
     $('#cancel-cropping').on('click', function () {
+        document.getElementById('profilePicsForm').reset()
         $('#crop-modal').modal('hide');
     })
 

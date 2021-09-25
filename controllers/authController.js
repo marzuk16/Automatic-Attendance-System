@@ -245,7 +245,7 @@ exports.resetPasswordPostController = (req, res, next) => {
 
             const msg = {
                 to: user.email, // Change to your recipient
-                from: 'marzuk777@gmail.com', // Change to your verified sender
+                from: 'presencesystembd@gmail.com', // Change to your verified sender
                 subject: 'Reset Password - Automatic Attendance System',
                 text: 'Click Here',
                 html: `

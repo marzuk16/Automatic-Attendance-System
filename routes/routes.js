@@ -6,6 +6,7 @@ const inboxRoute = require("./inboxRoute");
 const indexRoute = require("./indexRoute");
 const instituteRoute = require("./instituteRoute");
 const contactUs = require("./contactUsRoutes");
+const aboutUs = require("./aboutUsRoutes");
 
 const routes = [
     {
@@ -39,6 +40,10 @@ const routes = [
     {
         path: "/contact-us",
         handler: contactUs
+    },
+    {
+        path: "/about-us",
+        handler: aboutUs
     },
     {
         path: "/",
